@@ -10,7 +10,7 @@ public enum WeaponTypes
     None
 }
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "RPG/Weapon")]
 public class Weapon : EquippableItem {
     
     [Space]

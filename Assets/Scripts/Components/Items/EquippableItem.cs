@@ -15,7 +15,7 @@ public enum EquipmentTypes
 }
 
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "RPG/EquippableItem")]
 public class EquippableItem : Item{
 
     [SerializeField]

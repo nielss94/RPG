@@ -15,10 +15,19 @@ public abstract class Monster : Character, IDamageable {
     private float timeSinceDamage;
     private int hitCount;
 
+    [Header("Movement settings")]
     public bool moveRight = true;
-    public Vector2 destination;
-    private Vector2 direction;
+    public bool jumpDuringApproach = true;
+    [SerializeField] [Range(0,10)]private int jumpFrequency;
+    [SerializeField] private bool onFloor;
+    [SerializeField] private Transform platformChecker;
 
+    [SerializeField] [Range(0.5f, 10)] private float minJumpCooldown = 3f;
+    [SerializeField] [Range(0.5f, 10)] private float maxJumpCooldown = 3f;
+    private float jumpTimer;
+
+    [HideInInspector] public Vector2 destination;
+    private Vector2 direction;
 
     [Header("Combat Settings")]
     [SerializeField]
@@ -35,7 +44,9 @@ public abstract class Monster : Character, IDamageable {
     [SerializeField]
     private float knockBackFrequency;
     private float knockBackTimer;
-    [SerializeField]private Transform platformChecker;
+
+
+    
 
     void Awake()
     {
@@ -43,6 +54,10 @@ public abstract class Monster : Character, IDamageable {
             equipment = GetComponent<Equipment>();
         attackTimer = attackCooldown;
         knockBackTimer = knockBackFrequency;
+
+        float r = Random.Range(-1f, 1f);
+        moveRight = r > 0 ? true : false;
+        SetRotation();
     }
 
     public void Update()
@@ -57,9 +72,14 @@ public abstract class Monster : Character, IDamageable {
             attackTimer -= Time.deltaTime;
         }
 
-        if(knockBackTimer > 0)
+        if (knockBackTimer > 0)
         {
             knockBackTimer -= Time.deltaTime;
+        }
+
+        if (jumpTimer > 0)
+        {
+            jumpTimer -= Time.deltaTime;
         }
     }
 
@@ -179,6 +199,9 @@ public abstract class Monster : Character, IDamageable {
                 GetComponent<SpriteRenderer>().flipX = true;
             }
             transform.position = Vector2.MoveTowards(transform.position, destination, MoveSpeed * Time.deltaTime);
+            if (jumpDuringApproach) {
+                HandleJump();
+            }
         }
         else
         {
@@ -193,27 +216,75 @@ public abstract class Monster : Character, IDamageable {
         RaycastHit2D platformInfo = Physics2D.Raycast(platformChecker.GetChild(0).position, Vector2.down, 2f, LayerMask.NameToLayer("Platform"));
         if(platformInfo.collider == false)
         {
-            if (moveRight)
-            {
-                moveRight = false;
-                platformChecker.Rotate(0, 180, 0);
-                GetComponent<SpriteRenderer>().flipX = false;
-            }
-            else
-            {
-                moveRight = true;
-                platformChecker.Rotate(0, -180, 0);
-                GetComponent<SpriteRenderer>().flipX = true;
-            }
+            ChangeRotation();
         }
         if (moveRight)
-            transform.Translate(-1 * Time.deltaTime, 0, 0);
-        else
             transform.Translate(1 * Time.deltaTime, 0, 0);
+        else
+            transform.Translate(-1 * Time.deltaTime, 0, 0);
 
-
+        HandleJump();
     }
-    
+
+    void HandleJump()
+    {
+        if(jumpFrequency > 0)
+        {
+            if (onFloor)
+            {
+                if(jumpTimer <= 0)
+                {
+                    int decider = Random.Range(1, 10);
+                    if (decider <= jumpFrequency || jumpFrequency >= 10)
+                    {
+                        GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 2), ForceMode2D.Impulse);
+                        onFloor = false;
+                    }
+
+                    jumpTimer = Random.Range(minJumpCooldown, maxJumpCooldown);
+                }
+            }
+        }
+    }
+
+    void SetRotation()
+    {
+        if (moveRight)
+        {
+            platformChecker.Rotate(0, 0, 0);
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else
+        {
+            platformChecker.Rotate(0, -180, 0);
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+    }
+
+    void ChangeRotation()
+    {
+        if (moveRight)
+        {
+            moveRight = false;
+            platformChecker.Rotate(0, -180, 0);
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            moveRight = true;
+            platformChecker.Rotate(0, 180, 0);
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collider)
+    {
+        if (collider.gameObject.CompareTag("Platform"))
+        {
+            onFloor = true;
+        }
+    }
+
     public virtual void LoseTarget()
     {
         //Choose secondary target if there is another one.
@@ -293,6 +364,32 @@ public abstract class Monster : Character, IDamageable {
         set
         {
             direction = value;
+        }
+    }
+
+    public int JumpFrequency
+    {
+        get
+        {
+            return jumpFrequency;
+        }
+
+        set
+        {
+            jumpFrequency = value;
+        }
+    }
+
+    public bool OnFloor
+    {
+        get
+        {
+            return onFloor;
+        }
+
+        set
+        {
+            onFloor = value;
         }
     }
 }
