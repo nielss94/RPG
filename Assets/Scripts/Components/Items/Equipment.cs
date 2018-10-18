@@ -20,17 +20,17 @@ public class Equipment : MonoBehaviour {
     void Awake()
     {
         if (!helmet) 
-            helmet = Resources.Load<EquippableItem>("Prefabs/Armour/NoArmour");
+            helmet = Resources.Load<EquippableItem>("Prefabs/Equippables/NoArmour");
         if (!body)
-            body = Resources.Load<EquippableItem>("Prefabs/Armour/NoArmour");
+            body = Resources.Load<EquippableItem>("Prefabs/Equippables/NoArmour");
         if (!leggings)
-            leggings = Resources.Load<EquippableItem>("Prefabs/Armour/NoArmour");
+            leggings = Resources.Load<EquippableItem>("Prefabs/Equippables/NoArmour");
         if (!boots)
-            boots = Resources.Load<EquippableItem>("Prefabs/Armour/NoArmour");
+            boots = Resources.Load<EquippableItem>("Prefabs/Equippables/NoArmour");
         if (!gloves)
-            gloves = Resources.Load<EquippableItem>("Prefabs/Armour/NoArmour");
+            gloves = Resources.Load<EquippableItem>("Prefabs/Equippables/NoArmour");
         if (!shield)
-            shield = Resources.Load<EquippableItem>("Prefabs/Armour/NoArmour");
+            shield = Resources.Load<EquippableItem>("Prefabs/Equippables/NoArmour");
     }
 
     public EquippableItem Gloves

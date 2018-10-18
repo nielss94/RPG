@@ -31,14 +31,14 @@ public class RangedBasicAttack : Ability
         if (hit.collider != null)
         {
             //TODO: Get available projectile from inventory
-            Projectile steely = Resources.Load<Projectile>("Prefabs/Weapons/Projectiles/Steely");
+            Projectile steely = Resources.Load<Projectile>("Prefabs/Equippables/Weapons/Projectiles/Steely");
             Projectile projectile = Instantiate(steely, Character.transform.position, Quaternion.identity) as Projectile;
             projectile.Initialize(hit.transform, playerMovement.GetAimingDirection(), Character, Character.CalculateDamage());
         }
         else
         {
             //TODO: Get available projectile from inventory
-            Projectile steely = Resources.Load<Projectile>("Prefabs/Weapons/Projectiles/Steely");
+            Projectile steely = Resources.Load<Projectile>("Prefabs/Equippables/Weapons/Projectiles/Steely");
             Projectile projectile = Instantiate(steely, Character.transform.position, Quaternion.identity) as Projectile;
             projectile.Initialize(playerMovement.GetAimingDirection());
         }

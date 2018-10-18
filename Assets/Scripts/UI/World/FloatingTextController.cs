@@ -83,7 +83,6 @@ public class FloatingTextController : MonoBehaviour {
         instance.transform.SetParent(canvas.transform, false);
         instance.transform.position = screenPosition;
         instance.SetText(damage);
-        //instance.SetColor(color);
         instance.SetColorGradient(color);
         return instance;
     }
