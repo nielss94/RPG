@@ -27,17 +27,14 @@ public class Assassinate : Ability {
     {
         //TODO: Play fitting attack animation
 
-        if (hit.collider != null)
+        //TODO: Get available projectile from inventory
+        for (int i = 0; i < NumberOfHits; i++)
         {
-            //TODO: Get available projectile from inventory
-            for (int i = 0; i < NumberOfHits; i++)
-            {
-                AssassinateProjectile steely = Resources.Load<AssassinateProjectile>("Prefabs/Equippables/Weapons/Projectiles/AssassinateProjectile");
-                AssassinateProjectile projectile = Instantiate(steely, Character.transform.position, Quaternion.identity) as AssassinateProjectile;
-                float x = Random.Range(transform.position.x - 1.5f, transform.position.x + 1.5f);
-                float y = Random.Range(transform.position.y + (transform.localScale.y / 2), transform.position.y + 1.5f);
-                projectile.Initialize(new Vector2(x,y), hit.transform, Character, Character.CalculateDamage());
-            }
+            AssassinateProjectile steely = Resources.Load<AssassinateProjectile>("Prefabs/Equippables/Weapons/Projectiles/AssassinateProjectile");
+            AssassinateProjectile projectile = Instantiate(steely, Character.transform.position, Quaternion.identity) as AssassinateProjectile;
+            float x = Random.Range(transform.position.x - 1.5f, transform.position.x + 1.5f);
+            float y = Random.Range(transform.position.y + (transform.localScale.y / 2), transform.position.y + 1.5f);
+            projectile.Initialize(new Vector2(x,y), hit.transform, Character, Character.CalculateDamage(),Character.transform);
         }
     }
 

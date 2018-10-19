@@ -14,31 +14,35 @@ public class AssassinateProjectile : MonoBehaviour {
     private float speed;
     [SerializeField]
     private float range;
+    [SerializeField]
+    private Transform player;
 
     private Vector2 tempTarget;
     private Transform realTarget;
+    private bool approaching = false;
     
-    public void Initialize(Vector2 tempTarget, Transform target, ICanDealDamage owner, Damage damage)
+    public void Initialize(Vector2 tempTarget, Transform target, ICanDealDamage owner, Damage damage, Transform player)
     {
         this.target = target;
         this.owner = owner;
         this.damage = damage;
         this.tempTarget = tempTarget;
+        this.player = player;
         Invoke("SetRealTarget", 2f);
     }
 
     void SetRealTarget()
     {
-        realTarget = target;
+        if (target != null)
+        {
+            realTarget = target;
+        }
+        approaching = true;
     }
 
     void FixedUpdate () {
-        if(target == null)
-        {
-            Destroy(gameObject);
-        }
-       
-        transform.Rotate(0, 0, Random.Range(-1,1) <= 0 ? -30 : 30);
+        transform.Rotate(0, 0, Random.Range(-1, 1) <= 0 ? -30 : 30);
+
         if (realTarget != null)
         {
             if (Vector2.Distance(transform.position,target.transform.position) < 0.1f)
@@ -53,12 +57,20 @@ public class AssassinateProjectile : MonoBehaviour {
             }
         }else
         {
-            if(Vector2.Distance(transform.position, tempTarget) > 0.1)
+            if (approaching)
+            {
+                if (Vector2.Distance(transform.position, player.position) > 0.1)
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
+            }
+            else if (Vector2.Distance(transform.position, tempTarget) > 0.1)
             {
                 transform.position = Vector2.MoveTowards(transform.position, tempTarget, 4 * Time.fixedDeltaTime);
-            }else
-            {
-
             }
         }
 	}

@@ -213,8 +213,8 @@ public abstract class Monster : Character, IDamageable {
 
     public virtual void Idle()
     {
-        RaycastHit2D platformInfo = Physics2D.Raycast(platformChecker.GetChild(0).position, Vector2.down, 2f, LayerMask.NameToLayer("Platform"));
-        if(platformInfo.collider == false)
+        RaycastHit2D platformInfo = Physics2D.Raycast(platformChecker.GetChild(0).position, Vector2.down, 0.5f, LayerMask.GetMask("Platform"));
+        if(platformInfo.collider == null)
         {
             ChangeRotation();
         }

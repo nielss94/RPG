@@ -72,7 +72,7 @@ public class PlayerMovement : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D collider)
     {
-        if (collider.gameObject.CompareTag("Platform") && GetComponent<Rigidbody2D>().velocity.y <= 0)
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Platform") && GetComponent<Rigidbody2D>().velocity.y <= 0)
         {
             onFloor = true;
         }
@@ -80,7 +80,7 @@ public class PlayerMovement : MonoBehaviour {
 
     void OnCollisionExit2D(Collision2D collider)
     {
-        if (collider.gameObject.CompareTag("Platform"))
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
         {
             onFloor = false;
         }
