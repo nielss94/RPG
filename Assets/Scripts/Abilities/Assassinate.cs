@@ -68,4 +68,14 @@ public class Assassinate : Ability {
                                     LayerMask.GetMask("Monster"));
         }
     }
+
+    public override void ShowOnHitEffect(Transform target)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ShowOnSelfEffect()
+    {
+        throw new System.NotImplementedException();
+    }
 }

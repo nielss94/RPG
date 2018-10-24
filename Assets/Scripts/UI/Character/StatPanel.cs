@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public class StatPanel : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class StatPanel : MonoBehaviour
 
     public StatTooltip statTooltip;
 
+    public event Action OnStatsChanged;
+    
 	private void OnValidate()
 	{
 		statDisplays = GetComponentsInChildren<StatDisplay>();
@@ -49,6 +52,8 @@ public class StatPanel : MonoBehaviour
 		{
 			statDisplays[i].ValueText.text = stats[i].Value.ToString();
 		}
+        if (OnStatsChanged != null)
+            OnStatsChanged();
 	}
 
 	public void UpdateStatNames()

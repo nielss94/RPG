@@ -42,6 +42,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         
         inventory.OnItemRightClickedEvent += EquipFromInventory;
         equipmentPanel.OnItemRightClickedEvent += UnequipFromEquipPanel;
+        statPanel.OnStatsChanged += OnStatsChanged;
     }
 
     void Update()
@@ -59,6 +60,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             }
         }
 
+        //Count ability cooldowns
         foreach (AbilitySlot abilitySlot in abilitySlots)
         {
             if (abilitySlot.cooldownLeft > 0)
@@ -75,6 +77,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         {
             onHitMoveBlockTimer -= Time.deltaTime;
         }
+
     }
     
     public void DealDamage(IDamageable damageable, Damage damage)
@@ -84,19 +87,24 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
     public void TakeDamage(Damage damage, Character source)
     {
+        //TODO: Apply armour
         Monster monster = (Monster)source;
         KnockBack(monster.Direction);
-        Health = (short)Mathf.Clamp(Health - (damage.PhysicalAttack + damage.MagicalAttack), 0, MaxHealth);
-        Debug.LogFormat("OUCH! {0} took {1} damage", Name, (damage.PhysicalAttack + damage.MagicalAttack));
+        Health.CurHealth = (short)Mathf.Clamp(Health.CurHealth - (damage.PhysicalAttack + damage.MagicalAttack), 0, Health.MaxHealth);
+        //Debug.LogFormat("OUCH! {0} took {1} damage", Name, (damage.PhysicalAttack + damage.MagicalAttack));
 
         StartCoroutine(FloatingTextController.CreateDamageText(damage, transform.position,true));
 
-        if (Health <= 0)
+        if (Health.CurHealth <= 0)
         {
             Die();
         }
     }
 
+    public void GainExperience(int experience)
+    {
+        Experience += experience;
+    }
 
     public Ability AddBuff(Ability ability)
     {
@@ -110,6 +118,11 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         buffPanel.AddBuff(ability);
         activeBuffs.Add(ability);
         return null;
+    }
+
+    void OnStatsChanged()
+    {
+        Health.MaxHealth = (short)(Health.BaseMaxHealth + (Stats.Vitality.Value * 5));
     }
 
     public void RemoveBuff(Ability ability)

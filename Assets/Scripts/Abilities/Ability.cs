@@ -205,6 +205,8 @@ public abstract class Ability : MonoBehaviour {
     }
 
     public abstract void Execute(Character character);
+    public abstract void ShowOnHitEffect(Transform target);
+    public abstract void ShowOnSelfEffect();
 
     public virtual bool IsCorrectWeaponType()
     {

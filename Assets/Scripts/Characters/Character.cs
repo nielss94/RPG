@@ -7,9 +7,7 @@ public abstract class Character : MonoBehaviour
     [SerializeField]
     private new string name;
     [SerializeField]
-    private short health;
-    [SerializeField]
-    private short maxHealth;
+    private Health health;
     [SerializeField]
     private short level;
     [SerializeField]
@@ -40,33 +38,7 @@ public abstract class Character : MonoBehaviour
             level = value;
         }
     }
-
-    public short Health
-    {
-        get
-        {
-            return health;
-        }
-
-        set
-        {
-            health = value;
-        }
-    }
-
-    public short MaxHealth
-    {
-        get
-        {
-            return maxHealth;
-        }
-
-        set
-        {
-            maxHealth = value;
-        }
-    }
-
+    
     public int Experience
     {
         get
@@ -77,6 +49,19 @@ public abstract class Character : MonoBehaviour
         set
         {
             experience = value;
+        }
+    }
+
+    public Health Health
+    {
+        get
+        {
+            return health;
+        }
+
+        set
+        {
+            health = value;
         }
     }
 

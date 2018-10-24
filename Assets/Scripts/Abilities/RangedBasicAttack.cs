@@ -75,4 +75,14 @@ public class RangedBasicAttack : Ability
                                     LayerMask.GetMask("Monster"));
         }
     }
+
+    public override void ShowOnHitEffect(Transform target)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void ShowOnSelfEffect()
+    {
+        throw new NotImplementedException();
+    }
 }

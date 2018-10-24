@@ -21,6 +21,16 @@ public class LuckySeven : Ability {
         }
     }
 
+    public override void ShowOnHitEffect(Transform target)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ShowOnSelfEffect()
+    {
+        throw new System.NotImplementedException();
+    }
+
     IEnumerator Fire()
     {
         RaycastHit2D hit = rangedBasicAttack.AcquireTarget();

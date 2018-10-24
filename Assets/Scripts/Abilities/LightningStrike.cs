@@ -35,6 +35,7 @@ public class LightningStrike : Ability {
                 if (hit[i].collider != null)
                 {
                     IDamageable damageable = hit[i].transform.GetComponent<IDamageable>();
+                    ShowOnHitEffect(hit[i].transform);
                     StartCoroutine(PerformAttack(damageable));
                 }
             }
@@ -88,5 +89,16 @@ public class LightningStrike : Ability {
         d.PhysicalAttack = (int)(d.PhysicalAttack * (Power / 100f));
         d.MagicalAttack = (int)(d.MagicalAttack * (Power / 100f));
         return d;
+    }
+
+    public override void ShowOnHitEffect(Transform target)
+    {
+        ParticleSystem ps = Instantiate(OnHit, target.position, Quaternion.identity,target) as ParticleSystem;
+        Destroy(ps.gameObject, ps.main.duration);
+    }
+
+    public override void ShowOnSelfEffect()
+    {
+        throw new System.NotImplementedException();
     }
 }

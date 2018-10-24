@@ -12,6 +12,8 @@ public abstract class Monster : Character, IDamageable {
 
     private Dictionary<Character, List<int>> attackers = new Dictionary<Character, List<int>>();
 
+    public int experienceReward;
+
     private float timeSinceDamage;
     private int hitCount;
 
@@ -88,9 +90,10 @@ public abstract class Monster : Character, IDamageable {
         //TODO: Drop loot
         foreach(var character in attackers)
         {
-            //TODO: Reward players that attacked
             int damageDealt = character.Value.Sum(d => d);
-            double damagePercentage = Mathf.Clamp(damageDealt / MaxHealth * 100f, 0,100);
+            double damagePercentage = Mathf.Clamp(damageDealt / Health.MaxHealth * 100f, 0,100);
+            PlayableCharacter player = (PlayableCharacter)character.Key;
+            player.GainExperience((int)(experienceReward / 100 * damagePercentage));
             Debug.LogFormat("{0} defeated {1}. He dealt {2}({3}%) damage!", character.Key.Name, Name, damageDealt.ToString(), damagePercentage.ToString());
         }
         //TODO: Object pooling?
@@ -119,12 +122,12 @@ public abstract class Monster : Character, IDamageable {
         damage.MagicalAttack = (int)(damage.MagicalAttack * magMultiply);
 
         int lastHit = 0;
-        if(damage.GetTotalDamage() >= Health)
+        if(damage.GetTotalDamage() >= Health.CurHealth)
         {
-            lastHit = Health;
+            lastHit = Health.CurHealth;
         }
 
-        Health = (short)Mathf.Clamp(Health - (damage.PhysicalAttack + damage.MagicalAttack), 0, MaxHealth);
+        Health.CurHealth = (short)Mathf.Clamp(Health.CurHealth - (damage.PhysicalAttack + damage.MagicalAttack), 0, Health.MaxHealth);
         
         if(timeSinceDamage > 0)
         {
@@ -133,7 +136,7 @@ public abstract class Monster : Character, IDamageable {
         timeSinceDamage = 0.15f;
         StartCoroutine(FloatingTextController.CreateDamageText(damage, new Vector2(transform.position.x, transform.position.y + (.5f*hitCount))));
        
-        Debug.LogFormat("OUCH! {0} took {1} damage", Name, (damage.PhysicalAttack + damage.MagicalAttack));
+        //Debug.LogFormat("OUCH! {0} took {1} damage", Name, (damage.PhysicalAttack + damage.MagicalAttack));
 
         if (!attackers.ContainsKey(source))
         {
@@ -144,7 +147,7 @@ public abstract class Monster : Character, IDamageable {
             attackers[source].Add(lastHit != 0 ? lastHit : damage.GetTotalDamage());
         }
 
-        if (Health <= 0)
+        if (Health.CurHealth <= 0)
         {
             Die();
         }
@@ -279,7 +282,7 @@ public abstract class Monster : Character, IDamageable {
 
     void OnCollisionEnter2D(Collision2D collider)
     {
-        if (collider.gameObject.CompareTag("Platform"))
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
         {
             onFloor = true;
         }
