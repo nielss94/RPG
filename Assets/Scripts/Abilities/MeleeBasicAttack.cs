@@ -21,11 +21,12 @@ public class MeleeBasicAttack : Ability {
 
     public void Attack(RaycastHit2D hit)
     {
-        //TODO: Play fitting attack animations
+        //TODO: Play attack animation
 
         if (hit.collider != null)
         {
             IDamageable damageable = hit.transform.GetComponent<IDamageable>();
+            ShowOnHitEffect(hit.transform);
             Character.DealDamage(damageable, Character.CalculateDamage());
         }
 
@@ -56,14 +57,5 @@ public class MeleeBasicAttack : Ability {
                                     LayerMask.GetMask("Monster"));
         }
     }
-
-    public override void ShowOnHitEffect(Transform target)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void ShowOnSelfEffect()
-    {
-        throw new System.NotImplementedException();
-    }
+    
 }

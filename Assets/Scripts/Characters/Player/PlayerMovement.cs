@@ -95,5 +95,4 @@ public class PlayerMovement : MonoBehaviour {
     {
         return spriteRenderer.flipX ? Vector2.left : Vector2.right;
     }
-
 }

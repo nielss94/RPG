@@ -11,6 +11,4 @@ public class CharacterStats : MonoBehaviour {
     public CharacterStat Intelligence;
     public CharacterStat Vitality;
     public CharacterStat Agility;
-
-    
 }

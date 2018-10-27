@@ -49,8 +49,6 @@ public class Weapon : EquippableItem {
 
     public virtual Damage GetDamage(Character c)
     {
-        //TODO: Calculate using the character's stats
-        //TODO: Damage range
         //TODO: Critical hits?
         Damage d = new Damage((int)Mathf.Round((MagicalAttack * 1.5f)), (int)Mathf.Round((PhysicalAttack * 1.5f)));
         return d;

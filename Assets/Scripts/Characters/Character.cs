@@ -9,6 +9,8 @@ public abstract class Character : MonoBehaviour
     [SerializeField]
     private Health health;
     [SerializeField]
+    private Mana mana;
+    [SerializeField]
     private short level;
     [SerializeField]
     private int experience;
@@ -62,6 +64,19 @@ public abstract class Character : MonoBehaviour
         set
         {
             health = value;
+        }
+    }
+
+    public Mana Mana
+    {
+        get
+        {
+            return mana;
+        }
+
+        set
+        {
+            mana = value;
         }
     }
 

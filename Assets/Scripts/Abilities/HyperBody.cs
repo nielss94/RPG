@@ -25,17 +25,6 @@ public class HyperBody : Ability {
         }
     }
 
-    public override void ShowOnHitEffect(Transform target)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void ShowOnSelfEffect()
-    {
-        ParticleSystem ps = Instantiate(OnSelf, Character.transform.position, Quaternion.identity, Character.transform);
-        Destroy(ps.gameObject, ps.main.duration);
-    }
-
     void Update()
     {
         if(Duration > 0)

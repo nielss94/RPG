@@ -22,7 +22,7 @@ public class LightningStrike : Ability {
 
     public void Attack(List<RaycastHit2D> hit)
     {
-        //TODO: Play fitting attack animation
+        //TODO: Play attack animation
 
         if(hit.Count > 0)
         {
@@ -90,15 +90,5 @@ public class LightningStrike : Ability {
         d.MagicalAttack = (int)(d.MagicalAttack * (Power / 100f));
         return d;
     }
-
-    public override void ShowOnHitEffect(Transform target)
-    {
-        ParticleSystem ps = Instantiate(OnHit, target.position, Quaternion.identity,target) as ParticleSystem;
-        Destroy(ps.gameObject, ps.main.duration);
-    }
-
-    public override void ShowOnSelfEffect()
-    {
-        throw new System.NotImplementedException();
-    }
+    
 }

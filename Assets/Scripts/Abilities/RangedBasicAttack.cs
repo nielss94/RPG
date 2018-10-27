@@ -26,20 +26,17 @@ public class RangedBasicAttack : Ability
 
     public void Attack(RaycastHit2D hit)
     {
-        //TODO: Play fitting attack animation
+        //TODO: Play attack animation
 
+        //TODO: Get available projectile from inventory
+        Projectile steely = Resources.Load<Projectile>("Prefabs/Equippables/Weapons/Projectiles/Steely");
+        Projectile projectile = Instantiate(steely, Character.transform.position, Quaternion.identity) as Projectile;
         if (hit.collider != null)
         {
-            //TODO: Get available projectile from inventory
-            Projectile steely = Resources.Load<Projectile>("Prefabs/Equippables/Weapons/Projectiles/Steely");
-            Projectile projectile = Instantiate(steely, Character.transform.position, Quaternion.identity) as Projectile;
             projectile.Initialize(hit.transform, playerMovement.GetAimingDirection(), Character, Character.CalculateDamage());
         }
         else
         {
-            //TODO: Get available projectile from inventory
-            Projectile steely = Resources.Load<Projectile>("Prefabs/Equippables/Weapons/Projectiles/Steely");
-            Projectile projectile = Instantiate(steely, Character.transform.position, Quaternion.identity) as Projectile;
             projectile.Initialize(playerMovement.GetAimingDirection());
         }
 
@@ -74,15 +71,5 @@ public class RangedBasicAttack : Ability
                                     Character.Weapon.Range,
                                     LayerMask.GetMask("Monster"));
         }
-    }
-
-    public override void ShowOnHitEffect(Transform target)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void ShowOnSelfEffect()
-    {
-        throw new NotImplementedException();
     }
 }

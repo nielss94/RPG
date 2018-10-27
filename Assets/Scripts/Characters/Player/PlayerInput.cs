@@ -13,25 +13,54 @@ public class PlayerInput : MonoBehaviour {
     void Initialize()
     {
         //Setup controls here
-        //TODO: Get user's saved controls from db
-        
     }
 	
 	void Update () {
         foreach (AbilitySlot abilitySlot in character.abilitySlots)
         {
-            if (Input.GetKeyDown(abilitySlot.hotKey))
+            if (Input.GetKeyDown(abilitySlot.hotKey) && abilitySlot.ability != null)
             {
-                if(abilitySlot.cooldownLeft <= 0)
+                if(character.generalAbilityCooldownTimer <= 0)
                 {
-                    Ability a = Instantiate(abilitySlot.ability, transform.position, Quaternion.identity) as Ability;
-                    a.Execute(character);
+                    if (abilitySlot.cooldownLeft <= 0)
+                    {
+                        if (character.Mana.CurMana >= abilitySlot.ability.Cost)
+                        {
+                            Ability a = Instantiate(abilitySlot.ability, transform.position, Quaternion.identity) as Ability;
+                            a.Execute(character);
 
-                    abilitySlot.cooldownLeft = abilitySlot.ability.Cooldown;
+                            character.Mana.CurMana = (short)Mathf.Clamp(character.Mana.CurMana - abilitySlot.ability.Cost, 0, character.Mana.MaxMana);
+                            abilitySlot.cooldownLeft = abilitySlot.ability.Cooldown;
+                            character.generalAbilityCooldownTimer = character.generalAbilityCooldown;
+                        }
+                        else
+                        {
+                            //TODO: Send message to player: Not enough mana
+                            print("Not enough mana to use this ability");
+                        }
+                    }else
+                    {
+                        //TODO: Send message to player: Ability on cooldown
+                        print("This ability is on cooldown");
+                    }
+                } else
+                {
+                    print("Waiting for general ability cooldown first.");
                 }
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            character.LearnAbility(Resources.Load<Ability>("Prefabs/Abilities/Assassinate"));
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            character.LearnAbility(Resources.Load<Ability>("Prefabs/Abilities/MeleeBasicAttack"));
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            character.abilitiesPanel.gameObject.SetActive(!character.abilitiesPanel.gameObject.activeSelf);
+        }
         if (Input.GetKeyDown(KeyCode.O))
         {
             character.equipmentPanel.gameObject.SetActive(!character.equipmentPanel.gameObject.activeSelf);

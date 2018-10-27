@@ -23,6 +23,8 @@ public abstract class Ability : MonoBehaviour {
     private float duration;
     [SerializeField]
     private WeaponTypes weaponType;
+    [SerializeField]
+    private Recipe recipe;
 
     [Header("Effects")]
     [SerializeField]
@@ -204,9 +206,39 @@ public abstract class Ability : MonoBehaviour {
         }
     }
 
+    public Recipe Recipe
+    {
+        get
+        {
+            return recipe;
+        }
+
+        set
+        {
+            recipe = value;
+        }
+    }
+
     public abstract void Execute(Character character);
-    public abstract void ShowOnHitEffect(Transform target);
-    public abstract void ShowOnSelfEffect();
+    
+    public virtual void ShowOnHitEffect(Transform target)
+    {
+        if(OnHit != null)
+        {
+            float height = target.GetComponent<SpriteRenderer>().bounds.size.y;
+            ParticleSystem ps = Instantiate(OnHit, new Vector2(target.position.x, target.position.y + (height /3)), Quaternion.identity, target) as ParticleSystem;
+            Destroy(ps.gameObject, ps.main.duration);
+        }
+    }
+
+    public virtual void ShowOnSelfEffect()
+    {
+        if(OnSelf != null)
+        {
+            ParticleSystem ps = Instantiate(OnSelf, Character.transform.position, Quaternion.identity, Character.transform);
+            Destroy(ps.gameObject, ps.main.duration);
+        }
+    }
 
     public virtual bool IsCorrectWeaponType()
     {

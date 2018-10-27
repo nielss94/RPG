@@ -20,6 +20,8 @@ public class AssassinateProjectile : MonoBehaviour {
     private Vector2 tempTarget;
     private Transform realTarget;
     private bool approaching = false;
+
+    public ParticleSystem OnHit;
     
     public void Initialize(Vector2 tempTarget, Transform target, ICanDealDamage owner, Damage damage, Transform player)
     {
@@ -48,7 +50,12 @@ public class AssassinateProjectile : MonoBehaviour {
             if (Vector2.Distance(transform.position,target.transform.position) < 0.1f)
             {
                 owner.DealDamage(target.GetComponent<IDamageable>(), damage);
-
+                if(OnHit != null)
+                {
+                    float height = target.GetComponent<SpriteRenderer>().bounds.size.y;
+                    ParticleSystem ps = Instantiate(OnHit, new Vector2(target.position.x, target.position.y + (height / 3)), Quaternion.identity, target) as ParticleSystem;
+                    Destroy(ps.gameObject, ps.main.duration);
+                }
                 //TODO: Object pooling?
                 Destroy(gameObject);
             }else

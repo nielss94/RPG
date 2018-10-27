@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+
 public abstract class Monster : Character, IDamageable {
     
     [SerializeField]
@@ -13,6 +14,8 @@ public abstract class Monster : Character, IDamageable {
     private Dictionary<Character, List<int>> attackers = new Dictionary<Character, List<int>>();
 
     public int experienceReward;
+
+    public event System.Action OnHealthChanged;
 
     private float timeSinceDamage;
     private int hitCount;
@@ -46,8 +49,6 @@ public abstract class Monster : Character, IDamageable {
     [SerializeField]
     private float knockBackFrequency;
     private float knockBackTimer;
-
-
     
 
     void Awake()
@@ -128,13 +129,15 @@ public abstract class Monster : Character, IDamageable {
         }
 
         Health.CurHealth = (short)Mathf.Clamp(Health.CurHealth - (damage.PhysicalAttack + damage.MagicalAttack), 0, Health.MaxHealth);
-        
+        if (OnHealthChanged != null)
+            OnHealthChanged();
+
         if(timeSinceDamage > 0)
         {
             hitCount++;
         }
         timeSinceDamage = 0.15f;
-        StartCoroutine(FloatingTextController.CreateDamageText(damage, new Vector2(transform.position.x, transform.position.y + (.5f*hitCount))));
+        StartCoroutine(FloatingTextController.CreateDamageText(damage, new Vector2(transform.position.x, transform.position.y + 0.5f + (.5f*hitCount))));
        
         //Debug.LogFormat("OUCH! {0} took {1} damage", Name, (damage.PhysicalAttack + damage.MagicalAttack));
 

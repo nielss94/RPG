@@ -25,7 +25,7 @@ public class Assassinate : Ability {
 
     public void Attack(RaycastHit2D hit)
     {
-        //TODO: Play fitting attack animation
+        //TODO: Playattack animation
 
         //TODO: Get available projectile from inventory
         for (int i = 0; i < NumberOfHits; i++)
@@ -67,15 +67,5 @@ public class Assassinate : Ability {
                                     Character.Weapon.Range,
                                     LayerMask.GetMask("Monster"));
         }
-    }
-
-    public override void ShowOnHitEffect(Transform target)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void ShowOnSelfEffect()
-    {
-        throw new System.NotImplementedException();
     }
 }

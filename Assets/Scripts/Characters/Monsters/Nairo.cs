@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Nairo : Monster {
     
-    
     new void Update()
     {
         base.Update();
@@ -17,6 +16,4 @@ public class Nairo : Monster {
             Idle();
         }
     }
-
-    
 }
