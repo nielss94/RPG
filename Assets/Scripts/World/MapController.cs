@@ -6,7 +6,7 @@ using System.Linq;
 
 public class MapController : MonoBehaviour {
 
-    [SerializeField] private List<MonsterPlatform> platforms = new List<MonsterPlatform>();
+    [SerializeField] private List<MonsterSpawn> platforms = new List<MonsterSpawn>();
     
 	void Awake () {
         SceneManager.sceneLoaded += SetMonsterPlatforms;
@@ -15,7 +15,7 @@ public class MapController : MonoBehaviour {
     void SetMonsterPlatforms(Scene scene, LoadSceneMode mode)
     {
         platforms.Clear();
-        platforms = FindObjectsOfType<MonsterPlatform>().ToList();
+        platforms = FindObjectsOfType<MonsterSpawn>().ToList();
         if(platforms.Count > 0)
         {
             foreach (var platform in platforms)

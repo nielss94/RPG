@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
-public class MonsterPlatform : MonoBehaviour {
+public class MonsterSpawn : MonoBehaviour {
 
     public List<Monster> monsterTypes = new List<Monster>();
     public List<Monster> activeMonsters = new List<Monster>();
@@ -10,12 +11,21 @@ public class MonsterPlatform : MonoBehaviour {
 
     private float spawnXLeft;
     private float spawnXRight;
+
+    private Transform buddy;
     
 
     public void Initialize()
     {
-        spawnXLeft = transform.position.x - (transform.localScale.x / 2);
-        spawnXRight = transform.position.x + (transform.localScale.x / 2);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 10, LayerMask.GetMask("MonsterSpawn"));
+        
+        if (hit.collider != null)
+            buddy = hit.transform;
+        else
+            Destroy(gameObject);
+
+        spawnXLeft = transform.position.x;
+        spawnXRight = buddy.position.x;
     }
 	
 	public void SpawnMonsters(int amount)
