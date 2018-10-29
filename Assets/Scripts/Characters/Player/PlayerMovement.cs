@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
     
     private SpriteRenderer spriteRenderer;
-    
+
     [SerializeField]
     private bool onFloor;
+    [SerializeField]
+    private bool isJumping = true;
 
     public float baseMoveSpeed;
     [SerializeField]
@@ -50,7 +52,14 @@ public class PlayerMovement : MonoBehaviour {
         }
         if (move != 0 && !onFloor)
         {
-            transform.Translate(move * Time.fixedDeltaTime * (baseMoveSpeed / 4), 0, 0);
+            if(!isJumping && GetComponent<Rigidbody2D>().velocity.y <= 0)
+            {
+                transform.Translate(move * Time.fixedDeltaTime * (moveSpeed / 2), 0, 0);
+            }
+            else
+            {
+                transform.Translate(move * Time.fixedDeltaTime * (baseMoveSpeed / 4), 0, 0);
+            }
         }
         if (jump > 0 && onFloor && GetComponent<Rigidbody2D>().velocity.y <= 0)
         {
@@ -67,6 +76,7 @@ public class PlayerMovement : MonoBehaviour {
                 GetComponent<Rigidbody2D>().AddForce(new Vector2(0, jumpforce.y), ForceMode2D.Impulse);
             }
             onFloor = false;
+            isJumping = true;
         }
     }
 
@@ -74,6 +84,7 @@ public class PlayerMovement : MonoBehaviour {
     {
         if (collider.gameObject.layer == LayerMask.NameToLayer("Platform") && GetComponent<Rigidbody2D>().velocity.y <= 0)
         {
+            isJumping = false;
             onFloor = true;
         }
     }
