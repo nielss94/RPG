@@ -30,11 +30,20 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
     public void SetAbilityLock(bool locked)
     {
         this.locked = locked;
-        if (this.locked == true)
+    }
+
+    public void SetDisplayValues()
+    {
+        SpellImage.sprite = Ability.Image;
+        AbilityName.text = Ability.Name;
+        if (locked)
         {
             CardImage.sprite = Resources.Load<Sprite>("Sprites/CardLocked");
         }
-        else
+        else if (!crafted)
+        {
+            CardImage.sprite = Resources.Load<Sprite>("Sprites/UncraftedCard");
+        } else
         {
             CardImage.sprite = Resources.Load<Sprite>("Sprites/Card");
         }
@@ -55,7 +64,7 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
         }
         else if(!crafted)
         {
-            print("Open craft screen");
+            UIController.OpenCraftPanel(Ability);
         }
         else
         {

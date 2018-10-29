@@ -10,6 +10,10 @@ public class AbilitiesPanel : MonoBehaviour {
 
     [SerializeField]
     private List<Ability> knownAbilities = new List<Ability>();
+    [SerializeField]
+    private List<Ability> unlockedAbilities = new List<Ability>();
+
+
 
     public int currentPage;
     public int cardsPerPage;
@@ -67,27 +71,48 @@ public class AbilitiesPanel : MonoBehaviour {
     {
         knownAbilities = abilities;
     }
+
+    public void SetUnlockedAbilities(List<Ability> unlocked)
+    {
+        unlockedAbilities = unlocked;
+    }
     
     public void UpdateAbilityCardValues()
     {
         for (int i = 0; i < abilityDisplays.Length; i++)
         {
-            abilityDisplays[i].SpellImage.sprite = abilityDisplays[i].Ability.Image;
-            abilityDisplays[i].AbilityName.text = abilityDisplays[i].Ability.Name;
             Ability a = null;
-            if (knownAbilities.Count > 0)
+            
+            if(unlockedAbilities.Count > 0)
             {
-                a = knownAbilities.FirstOrDefault(s => s.Name == abilityDisplays[i].Ability.Name);
+                a = unlockedAbilities.FirstOrDefault(s => s.Name == abilityDisplays[i].Ability.Name);
             }
 
-            if (a == null) 
+            if(a != null)
             {
-                abilityDisplays[i].SetAbilityLock(true);
+                abilityDisplays[i].SetAbilityLock(false);
+                abilityDisplays[i].SetAbilityCrafted(false);
             }
             else
             {
-                abilityDisplays[i].SetAbilityLock(false);
+                Ability b = null;
+                if (knownAbilities.Count > 0)
+                {
+                    b = knownAbilities.FirstOrDefault(s => s.Name == abilityDisplays[i].Ability.Name);
+                }
+
+                if(b != null)
+                {
+                    abilityDisplays[i].SetAbilityLock(false);
+                    abilityDisplays[i].SetAbilityCrafted(true);
+                }else
+                {
+                    abilityDisplays[i].SetAbilityLock(true);
+                    abilityDisplays[i].SetAbilityCrafted(false);
+                }
             }
+
+            abilityDisplays[i].SetDisplayValues();
         }
     }
 }

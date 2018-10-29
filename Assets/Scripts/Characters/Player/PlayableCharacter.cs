@@ -15,6 +15,8 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     public AbilitySlot[] abilitySlots = new AbilitySlot[4];
     [SerializeField]
     private List<Ability> knownAbilities = new List<Ability>();
+    [SerializeField]
+    private List<Ability> unlockedAbilities = new List<Ability>();
 
 
     public List<Ability> activeBuffs = new List<Ability>();
@@ -50,6 +52,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         statPanel.UpdateStatValues();
 
         abilitiesPanel.SetAbilities(knownAbilities);
+        abilitiesPanel.SetUnlockedAbilities(unlockedAbilities);
         abilitiesPanel.UpdateAbilityCardValues();
 
         
@@ -102,7 +105,22 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         Ability a = knownAbilities.FirstOrDefault(s => s.Name == ability.Name);
         if(a == null)
         {
-            knownAbilities.Add(ability);
+            Ability b = unlockedAbilities.FirstOrDefault(s => s.Name == ability.Name);
+            if(b != null)
+            {
+                knownAbilities.Add(ability);
+                unlockedAbilities.Remove(b);
+                abilitiesPanel.UpdateAbilityCardValues();
+            }
+        }
+    }
+
+    public void UnlockAbility(Ability ability)
+    {
+        Ability a = unlockedAbilities.FirstOrDefault(s => s.Name == ability.Name);
+        if (a == null)
+        {
+            unlockedAbilities.Add(ability);
             abilitiesPanel.UpdateAbilityCardValues();
         }
     }

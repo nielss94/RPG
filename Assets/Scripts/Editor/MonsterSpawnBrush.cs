@@ -19,6 +19,11 @@ namespace UnityEditor
 			if (brushTarget.layer == 31)
 				return;
 
+            if(m_Prefabs.Length > 2)
+            {
+                Debug.LogError("Brush can only contain two prefabs");
+                return;
+            }
 			
 			GameObject prefab = m_Prefabs[nextIndex];
 			GameObject instance = (GameObject) PrefabUtility.InstantiatePrefab(prefab);
@@ -30,10 +35,13 @@ namespace UnityEditor
 				instance.transform.position = grid.LocalToWorld(grid.CellToLocalInterpolated(new Vector3Int(position.x, position.y, m_Z) + new Vector3(.5f, .5f, .5f)));
 			}
 
-            if (nextIndex == 1)
-                nextIndex = 0;
-            else
-                nextIndex = 1;
+            if(m_Prefabs.Length == 2)
+            {
+                if (nextIndex == 1)
+                    nextIndex = 0;
+                else
+                    nextIndex = 1;
+            }
         }
 
 		public override void Erase(GridLayout grid, GameObject brushTarget, Vector3Int position)

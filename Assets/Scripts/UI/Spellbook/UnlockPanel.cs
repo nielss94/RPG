@@ -23,7 +23,7 @@ public class UnlockPanel : MonoBehaviour {
 
     public void Unlock()
     {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>().LearnAbility(ability);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>().UnlockAbility(ability);
         Destroy(gameObject);
     }
 }
