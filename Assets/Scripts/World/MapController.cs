@@ -10,6 +10,7 @@ public class MapController : MonoBehaviour {
     
 	void Awake () {
         SceneManager.sceneLoaded += SetMonsterPlatforms;
+        GameplayCamera.Initialize();
 	}
     
     void SetMonsterPlatforms(Scene scene, LoadSceneMode mode)
