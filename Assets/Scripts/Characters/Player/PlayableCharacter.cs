@@ -28,6 +28,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     public Inventory inventory;
     public BuffPanel buffPanel;
     public AbilitiesPanel abilitiesPanel;
+    public AbilitiesBar abilitiesBar;
     
     [Header("Combat")]
     [SerializeField]
@@ -54,6 +55,9 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         abilitiesPanel.SetAbilities(knownAbilities);
         abilitiesPanel.SetUnlockedAbilities(unlockedAbilities);
         abilitiesPanel.UpdateAbilityCardValues();
+
+        abilitiesBar.SetAbilitySlots(abilitySlots);
+        abilitiesBar.UpdateAbilitySlotDisplayValues();
 
         
         inventory.OnItemRightClickedEvent += EquipFromInventory;
