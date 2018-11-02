@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class AbilitySlotDisplay : MonoBehaviour
+public class AbilitySlotDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 
     public Image SpellImage;
@@ -28,7 +28,7 @@ public class AbilitySlotDisplay : MonoBehaviour
     
     public void SetDisplayValues()
     {
-        if(AbilitySlot != null)
+        if(AbilitySlot.ability != null)
         {
             SpellImage.sprite = AbilitySlot.ability.Image;
             Hotkey.text = AbilitySlot.hotKey.ToString();
@@ -47,4 +47,15 @@ public class AbilitySlotDisplay : MonoBehaviour
             CooldownImage.transform.localScale = new Vector3(CooldownImage.transform.localScale.x, 0, CooldownImage.transform.localScale.z);
         }
     }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        AbilitiesBar.SetHoveringAbility(this);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        AbilitiesBar.SetHoveringAbility(null);
+    }
+    
 }

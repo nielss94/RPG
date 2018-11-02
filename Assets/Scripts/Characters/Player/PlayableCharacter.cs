@@ -27,7 +27,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     public EquipmentPanel equipmentPanel;
     public Inventory inventory;
     public BuffPanel buffPanel;
-    public AbilitiesPanel abilitiesPanel;
+    public Spellbook spellbook; 
     public AbilitiesBar abilitiesBar;
     
     [Header("Combat")]
@@ -52,9 +52,9 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
                             stats.Strength, stats.Intelligence, stats.Vitality, stats.Agility);
         statPanel.UpdateStatValues();
 
-        abilitiesPanel.SetAbilities(knownAbilities);
-        abilitiesPanel.SetUnlockedAbilities(unlockedAbilities);
-        abilitiesPanel.UpdateAbilityCardValues();
+        spellbook.abilitiesPanel.SetAbilities(knownAbilities);
+        spellbook.abilitiesPanel.SetUnlockedAbilities(unlockedAbilities);
+        spellbook.abilitiesPanel.UpdateAbilityCardValues();
 
         abilitiesBar.SetAbilitySlots(abilitySlots);
         abilitiesBar.UpdateAbilitySlotDisplayValues();
@@ -67,19 +67,6 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
     void Update()
     {
-        if(Weapon != null)
-        {
-            switch (Weapon.WeaponType)
-            {
-                case WeaponTypes.Melee:
-                    abilitySlots[0].ability = Resources.Load<Ability>("Prefabs/Abilities/MeleeBasicAttack");
-                    break;
-                case WeaponTypes.Ranged:
-                    abilitySlots[0].ability = Resources.Load<Ability>("Prefabs/Abilities/RangedBasicAttack");
-                    break;
-            }
-        }
-
         if(generalAbilityCooldownTimer > 0)
         {
             generalAbilityCooldownTimer -= Time.deltaTime;
@@ -114,7 +101,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             {
                 knownAbilities.Add(ability);
                 unlockedAbilities.Remove(b);
-                abilitiesPanel.UpdateAbilityCardValues();
+                spellbook.abilitiesPanel.UpdateAbilityCardValues();
             }
         }
     }
@@ -125,7 +112,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         if (a == null)
         {
             unlockedAbilities.Add(ability);
-            abilitiesPanel.UpdateAbilityCardValues();
+            spellbook.abilitiesPanel.UpdateAbilityCardValues();
         }
     }
     
@@ -180,6 +167,20 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
     public void Equip(EquippableItem item)
     {
+        if(item.EquipmentType == EquipmentTypes.Weapon)
+        {
+            Weapon w = (Weapon)item;
+            switch (w.WeaponType)
+            {
+                case WeaponTypes.Melee:
+                    abilitySlots[0].ability = Resources.Load<Ability>("Prefabs/Abilities/MeleeBasicAttack");
+                    break;
+                case WeaponTypes.Ranged:
+                    abilitySlots[0].ability = Resources.Load<Ability>("Prefabs/Abilities/RangedBasicAttack");
+                    break;
+            }
+            abilitiesBar.UpdateAbilitySlotDisplayValues();
+        }
         if (inventory.RemoveItem(item))
         {
             EquippableItem previousItem;

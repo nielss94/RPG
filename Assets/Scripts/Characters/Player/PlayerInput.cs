@@ -59,7 +59,7 @@ public class PlayerInput : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
-            character.abilitiesPanel.gameObject.SetActive(!character.abilitiesPanel.gameObject.activeSelf);
+            character.spellbook.gameObject.SetActive(!character.spellbook.gameObject.activeSelf);
         }
         if (Input.GetKeyDown(KeyCode.O))
         {

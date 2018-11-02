@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image SpellImage;
     public Image CardImage;
@@ -16,12 +16,25 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
 
     public Ability Ability;
 
+    public bool dragging = false;
+    private Image spellIcon;
+    private Image draggingSpell;
+
+    void Start()
+    {
+        spellIcon = Resources.Load<Image>("Prefabs/UI/Spellbook/SpellIcon");
+    }
+
+    void OnDisable()
+    {
+        if (dragging)
+            StopDragging();
+    }
 
     private void OnValidate()
     {
         Text text = GetComponentInChildren<Text>();
         Image[] image = GetComponentsInChildren<Image>();
-        
         SpellImage = image[0];
         CardImage = image[1];
         AbilityName = text;
@@ -66,20 +79,54 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
         {
             UIController.OpenCraftPanel(Ability);
         }
-        else
-        {
-            print("Hover");
-        }
         //If available, start hovering so it can be attached to healthbar
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        //print(Ability.Name + " Down");
+        if (!locked && crafted)
+        {
+            dragging = true;
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        //print(Ability.Name + " Up");
+        dragging = false;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (dragging)
+        {
+            draggingSpell.rectTransform.position = eventData.position;
+        }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (dragging)
+        {
+            draggingSpell = Instantiate(spellIcon, eventData.position, Quaternion.identity,transform) as Image;
+            draggingSpell.sprite = SpellImage.sprite;
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        StopDragging();
+    }
+
+    void StopDragging()
+    {
+        AbilitySlotDisplay asd = AbilitiesBar.GetHoveringAbility();
+        if(asd != null)
+        {
+            asd.AbilitySlot.ability = Ability;
+            asd.SetDisplayValues();
+        }
+        dragging = false;
+        if(draggingSpell != null)
+            Destroy(draggingSpell.gameObject);
     }
 }

@@ -10,7 +10,9 @@ public class AbilitiesBar : MonoBehaviour {
 
     [SerializeField]
     private AbilitySlot[] abilitySlots;
-    
+
+    static AbilitySlotDisplay hoveringSlot;
+
 
     private void OnValidate()
     {
@@ -32,5 +34,15 @@ public class AbilitiesBar : MonoBehaviour {
                 abilitySlotDisplays[i].SetDisplayValues();
             }
         }
+    }
+
+    public static void SetHoveringAbility(AbilitySlotDisplay abilitySlotDisplay)
+    {
+        hoveringSlot = abilitySlotDisplay;
+    }
+
+    public static AbilitySlotDisplay GetHoveringAbility()
+    {
+        return hoveringSlot;
     }
 }
