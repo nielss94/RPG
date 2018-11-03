@@ -4,11 +4,15 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 	[SerializeField] Image image;
 
 	public event Action<Item> OnRightClickEvent;
+
+    private Vector3 originalPos;
+
+    [SerializeField] private Inventory inventory;
 
 	private Item _item;
 	public Item Item {
@@ -17,13 +21,18 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 			_item = value;
 
 			if (_item == null) {
-				image.enabled = false;
+				image.sprite = null;
 			} else {
 				image.sprite = _item.Icon;
 				image.enabled = true;
 			}
 		}
 	}
+
+    void Awake()
+    {
+        inventory = transform.parent.GetComponentInParent<Inventory>();
+    }
 
 	public void OnPointerClick(PointerEventData eventData)
 	{
@@ -42,11 +51,52 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-        ItemTooltip.Instance.ShowTooltip(Item);
+        if (inventory.dragging)
+        {
+            if(inventory.draggingSlot != this)
+                inventory.hoveringSlot = this;
+        }else
+        {
+            ItemTooltip.Instance.ShowTooltip(Item);
+        }
 	}
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
-		ItemTooltip.Instance.HideTooltip();
-	}
+        if (inventory.dragging)
+        {
+            inventory.hoveringSlot = null;
+        }
+        ItemTooltip.Instance.HideTooltip();
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if(inventory.dragging && Item != null)
+        {
+            GetComponent<Canvas>().sortingOrder = 0;
+            image.rectTransform.position = eventData.position;
+        }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        inventory.draggingSlot = this;
+        originalPos = image.rectTransform.position;
+        inventory.dragging = true;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (inventory.dragging)
+        {
+            inventory.dragging = false;
+            if(inventory.hoveringSlot != null)
+            {
+                inventory.MoveItem();
+            }
+            image.rectTransform.position = originalPos;
+            GetComponent<Canvas>().sortingOrder = 1;
+        }
+    }
 }

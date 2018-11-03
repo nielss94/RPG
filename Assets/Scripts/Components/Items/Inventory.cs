@@ -12,6 +12,10 @@ public class Inventory : MonoBehaviour
 
     public ItemTooltip itemTooltip;
 
+    public bool dragging = false;
+    public ItemSlot draggingSlot;
+    public ItemSlot hoveringSlot;
+
 	private void Start()
 	{
 		for (int i = 0; i < itemSlots.Length; i++)
@@ -40,6 +44,20 @@ public class Inventory : MonoBehaviour
 		RefreshUI();
 	}
 
+    public void MoveItem()
+    {
+        Item dragSlotItem = draggingSlot.Item;
+        Item hoverSlotItem = hoveringSlot.Item;
+
+        if (hoverSlotItem != null)
+            draggingSlot.Item = hoverSlotItem;
+        else
+            draggingSlot.Item = null;
+        hoveringSlot.Item = dragSlotItem;
+        draggingSlot = null;
+        hoveringSlot = null;
+    }
+
 	private void RefreshUI()
 	{
 		int i = 0;
@@ -60,7 +78,15 @@ public class Inventory : MonoBehaviour
 			return false;
 
 		items.Add(item);
-		RefreshUI();
+        foreach (var itemSlot in itemSlots)
+        {
+            if(itemSlot.Item == null)
+            {
+                itemSlot.Item = item;
+                return true;
+            }
+        }
+		//RefreshUI();
 		return true;
 	}
 
@@ -68,8 +94,14 @@ public class Inventory : MonoBehaviour
 	{
 		if (items.Remove(item))
 		{
-			RefreshUI();
-			return true;
+            foreach (var itemSlot in itemSlots)
+            {
+                if (itemSlot.Item == item)
+                {
+                    itemSlot.Item = null;
+                    return true;
+                }
+            }
 		}
 		return false;
 	}
