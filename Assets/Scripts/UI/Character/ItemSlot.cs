@@ -31,7 +31,8 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
     void Awake()
     {
-        inventory = transform.parent.GetComponentInParent<Inventory>();
+        if(!(this is EquipmentSlot))
+            inventory = transform.parent.GetComponentInParent<Inventory>();
     }
 
 	public void OnPointerClick(PointerEventData eventData)
@@ -51,11 +52,19 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-        if (inventory.dragging)
+        if (inventory != null)
         {
-            if(inventory.draggingSlot != this)
-                inventory.hoveringSlot = this;
-        }else
+            if (inventory.dragging)
+            {
+                if (inventory.draggingSlot != this)
+                    inventory.hoveringSlot = this;
+            }
+            else
+            {
+                ItemTooltip.Instance.ShowTooltip(Item);
+            }
+        }
+        if(this is EquipmentSlot)
         {
             ItemTooltip.Instance.ShowTooltip(Item);
         }
@@ -63,40 +72,52 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
-        if (inventory.dragging)
+        if (inventory != null)
         {
-            inventory.hoveringSlot = null;
+            if (inventory.dragging)
+            {
+                inventory.hoveringSlot = null;
+            }
         }
         ItemTooltip.Instance.HideTooltip();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if(inventory.dragging && Item != null)
+        if (inventory != null)
         {
-            GetComponent<Canvas>().sortingOrder = 0;
-            image.rectTransform.position = eventData.position;
+            if (inventory.dragging && Item != null)
+            {
+                GetComponent<Canvas>().sortingOrder = 0;
+                image.rectTransform.position = eventData.position;
+            }
         }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        inventory.draggingSlot = this;
-        originalPos = image.rectTransform.position;
-        inventory.dragging = true;
+        if (inventory != null)
+        {
+            inventory.draggingSlot = this;
+            originalPos = image.rectTransform.position;
+            inventory.dragging = true;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (inventory.dragging)
+        if (inventory != null)
         {
-            inventory.dragging = false;
-            if(inventory.hoveringSlot != null)
+            if (inventory.dragging)
             {
-                inventory.MoveItem();
+                inventory.dragging = false;
+                if (inventory.hoveringSlot != null)
+                {
+                    inventory.MoveItem();
+                }
+                image.rectTransform.position = originalPos;
+                GetComponent<Canvas>().sortingOrder = 1;
             }
-            image.rectTransform.position = originalPos;
-            GetComponent<Canvas>().sortingOrder = 1;
         }
     }
 }
