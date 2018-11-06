@@ -9,7 +9,8 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     
     private PlayerMovement playerMovement;
     private CharacterStats stats;
-    
+    [SerializeField] private Currency currency;
+
     [Space]
     [Header("Abilities")]
     public AbilitySlot[] abilitySlots = new AbilitySlot[4];
@@ -59,12 +60,15 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         abilitiesBar.SetAbilitySlots(abilitySlots);
         abilitiesBar.UpdateAbilitySlotDisplayValues();
 
-        
-        inventory.OnItemRightClickedEvent += EquipFromInventory;
+        currency.SetValues();
+        inventory.SetCurrency(currency);
+        inventory.UpdateCurrency();
+
+        inventory.OnItemRightClickedEvent += UseItemFromInventory;
         equipmentPanel.OnItemRightClickedEvent += UnequipFromEquipPanel;
         statPanel.OnStatsChanged += OnStatsChanged;
     }
-
+    
     void Update()
     {
         if(generalAbilityCooldownTimer > 0)
@@ -89,8 +93,36 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             onHitMoveBlockTimer -= Time.deltaTime;
         }
 
+
     }
 
+    void OnStatsChanged()
+    {
+        Health.MaxHealth = (short)(Health.BaseMaxHealth + (Stats.Vitality.Value * 5));
+    }
+
+    public void GainExperience(int experience)
+    {
+        Experience += experience;
+    }
+
+    public void AddCurrency(ulong value)
+    {
+        currency.AddValue(value);
+        inventory.UpdateCurrency();
+    }
+
+    public bool TakeCurrency(ulong value)
+    {
+        if (currency.SubtractValue(value))
+        {
+            inventory.UpdateCurrency();
+            return true;
+        }
+        return false;
+    }
+
+    #region Abilities
     public void LearnAbility(Ability ability)
     {
         Ability a = knownAbilities.FirstOrDefault(s => s.Name == ability.Name);
@@ -105,7 +137,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             }
         }
     }
-
+    
     public void UnlockAbility(Ability ability)
     {
         Ability a = unlockedAbilities.FirstOrDefault(s => s.Name == ability.Name);
@@ -114,16 +146,6 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             unlockedAbilities.Add(ability);
             spellbook.abilitiesPanel.UpdateAbilityCardValues();
         }
-    }
-    
-    void OnStatsChanged()
-    {
-        Health.MaxHealth = (short)(Health.BaseMaxHealth + (Stats.Vitality.Value * 5));
-    }
-
-    public void GainExperience(int experience)
-    {
-        Experience += experience;
     }
 
     public Ability AddBuff(Ability ability)
@@ -145,15 +167,19 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         buffPanel.RemoveBuff(ability);
         activeBuffs.Remove(ability);
     }
+    #endregion
 
-    /**
-     * Equipment methods
-     * */
-    private void EquipFromInventory(Item item)
+    #region Inventory
+    private void UseItemFromInventory(Item item)
     {
         if (item is EquippableItem)
         {
             Equip((EquippableItem)item);
+        }
+        else if (item is UsableItem)
+        {
+            UsableItem i = item as UsableItem;
+            i.Use(this);
         }
     }
 
@@ -211,10 +237,9 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             inventory.AddItem(item);
         }
     }
+    #endregion
 
-    /**
-     * Calculates damage and takes stats based on stats
-     * */
+    #region Combat
     public Damage CalculateDamage()
     {
         float phys = Stats.PhysicalAttack.Value * (1 + (Stats.Strength.Value / 100f));
@@ -247,13 +272,11 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             Die();
         }
     }
-
-
+    
     public void Die()
     {
         print(Name + " died.");
     }
-    
 
     public void KnockBack(Vector2 direction)
     {
@@ -264,6 +287,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             onHitMoveBlockTimer = onHitMoveBlockTime;
         }
     }
+    #endregion
 
     void OnDrawGizmos()
     {
@@ -344,6 +368,19 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         set
         {
             playerMovement = value;
+        }
+    }
+
+    public Currency Currency
+    {
+        get
+        {
+            return currency;
+        }
+
+        set
+        {
+            currency = value;
         }
     }
 }

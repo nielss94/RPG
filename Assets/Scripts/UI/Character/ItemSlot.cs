@@ -7,12 +7,15 @@ using TMPro;
 public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 	[SerializeField] Image image;
+    [SerializeField] TextMeshProUGUI quantityText;
 
 	public event Action<Item> OnRightClickEvent;
 
     private Vector3 originalPos;
 
     [SerializeField] private Inventory inventory;
+
+    [SerializeField]private int itemQuantity = 1;
 
 	private Item _item;
 	public Item Item {
@@ -22,12 +25,27 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
 			if (_item == null) {
 				image.sprite = null;
+                image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
 			} else {
 				image.sprite = _item.Icon;
-				image.enabled = true;
+                image.color = new Color(image.color.r, image.color.g, image.color.b, 1);
+                image.enabled = true;
 			}
 		}
 	}
+    public int ItemQuantity
+    {
+        get{ return itemQuantity; }
+        set {
+            itemQuantity = value;
+
+            if (itemQuantity > 1 && quantityText != null)
+                quantityText.text = itemQuantity.ToString();
+            else
+                quantityText.text = "";
+        }
+    }
+
 
     void Awake()
     {
@@ -48,6 +66,8 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 	{
 		if (image == null)
 			image = GetComponent<Image>();
+        if (quantityText == null)
+            quantityText = GetComponentInChildren<TextMeshProUGUI>();
 	}
 
 	public void OnPointerEnter(PointerEventData eventData)
@@ -88,7 +108,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
         {
             if (inventory.dragging && Item != null)
             {
-                GetComponent<Canvas>().sortingOrder = 0;
+                GetComponent<CanvasGroup>().blocksRaycasts = false;
                 image.rectTransform.position = eventData.position;
             }
         }
@@ -116,8 +136,10 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
                     inventory.MoveItem();
                 }
                 image.rectTransform.position = originalPos;
-                GetComponent<Canvas>().sortingOrder = 1;
+                GetComponent<CanvasGroup>().blocksRaycasts = true;
             }
         }
     }
+
+    
 }

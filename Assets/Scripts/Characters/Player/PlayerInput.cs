@@ -49,13 +49,52 @@ public class PlayerInput : MonoBehaviour {
                 }
             }
         }
-        if (Input.GetKeyDown(KeyCode.Keypad1))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            character.LearnAbility(Resources.Load<Ability>("Prefabs/Abilities/Assassinate"));
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1, LayerMask.GetMask("PickUp"));
+
+            if(hit.collider != null)
+            {
+                hit.transform.GetComponent<PickUp>().Take(character);
+            }
         }
-        if (Input.GetKeyDown(KeyCode.Keypad2))
+
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            character.LearnAbility(Resources.Load<Ability>("Prefabs/Abilities/MeleeBasicAttack"));
+            character.AddCurrency(10);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            character.AddCurrency(1000);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            character.AddCurrency(100000);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            character.AddCurrency(10000000);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            character.TakeCurrency(1000);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            character.TakeCurrency(100);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            character.TakeCurrency(10);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            character.inventory.AddItem(Resources.Load<Item>("Prefabs/Items/The X"),5);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            character.inventory.AddItem(Resources.Load<Item>("Prefabs/Items/Recipes/Recipe for Assassinate"), 5);
         }
         if (Input.GetKeyDown(KeyCode.K))
         {

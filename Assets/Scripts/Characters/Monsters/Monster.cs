@@ -49,6 +49,12 @@ public abstract class Monster : Character, IDamageable {
     [SerializeField]
     private float knockBackFrequency;
     private float knockBackTimer;
+
+    public List<Item> droppables = new List<Item>();
+
+    [Header("Currency")]
+    public ulong minCurrency;
+    public ulong maxCurrency;
     
 
     void Awake()
@@ -61,6 +67,12 @@ public abstract class Monster : Character, IDamageable {
         float r = Random.Range(-1f, 1f);
         moveRight = r > 0 ? true : false;
         SetRotation();
+    }
+
+    void OnValidate()
+    {
+        if (minCurrency > maxCurrency)
+            minCurrency = maxCurrency;
     }
 
     public void Update()
@@ -98,6 +110,20 @@ public abstract class Monster : Character, IDamageable {
             Debug.LogFormat("{0} defeated {1}. He dealt {2}({3}%) damage!", character.Key.Name, Name, damageDealt.ToString(), damagePercentage.ToString());
         }
         //TODO: Object pooling?
+        if(droppables.Count > 0)
+        {
+            PickUpItem pui = Resources.Load<PickUpItem>("Prefabs/Items/PickUp/PickupItem") as PickUpItem;
+            PickUpItem drop = Instantiate(pui, transform.position, Quaternion.identity);
+            drop.item = droppables[Random.Range(0, droppables.Count -1)];
+            drop.quantity = 1;
+        }
+        ulong currency = (ulong)Random.Range(minCurrency, maxCurrency);
+        if(currency > 0)
+        {
+            PickUpCurrency puc = Resources.Load<PickUpCurrency>("Prefabs/Items/PickUp/PickupCurrency") as PickUpCurrency;
+            PickUpCurrency drop = Instantiate(puc, transform.position, Quaternion.identity);
+            drop.value = currency;
+        }
         Destroy(gameObject);
     }
 

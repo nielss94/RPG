@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "RPG/Items/UsableItem")]
-public class UsableItem : Item {
+public abstract class UsableItem : Item {
 
-	
+    public abstract void Use(PlayableCharacter character);
 }

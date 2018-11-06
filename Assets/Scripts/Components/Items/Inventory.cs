@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class Inventory : MonoBehaviour
     public bool dragging = false;
     public ItemSlot draggingSlot;
     public ItemSlot hoveringSlot;
+
+    [SerializeField] Transform currencyParent;
+    [SerializeField] CurrencyDisplay[] currencyDisplays;
+    private Currency currency;
 
 	private void Start()
 	{
@@ -40,20 +45,45 @@ public class Inventory : MonoBehaviour
 	{
 		if (itemsParent != null)
 			itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
+        if (currencyParent != null)
+            currencyDisplays = currencyParent.GetComponentsInChildren<CurrencyDisplay>();
 
 		RefreshUI();
 	}
+
+    public void UpdateCurrency()
+    {
+        if(currencyDisplays.Length == 4)
+        {
+            currencyDisplays[0].value.text = currency.Copper.ToString();
+            currencyDisplays[1].value.text = currency.Silver.ToString();
+            currencyDisplays[2].value.text = currency.Gold.ToString();
+            currencyDisplays[3].value.text = currency.Platinum.ToString();
+        }else
+        {
+            Debug.LogError("4 Currency Types are expected to be found, please make sure there aren't less or more");
+        }
+    }
 
     public void MoveItem()
     {
         Item dragSlotItem = draggingSlot.Item;
         Item hoverSlotItem = hoveringSlot.Item;
+        int dragSlotQuantity = draggingSlot.ItemQuantity;
+        int hoverSlotQuantity = hoveringSlot.ItemQuantity;
 
         if (hoverSlotItem != null)
+        {
             draggingSlot.Item = hoverSlotItem;
+            draggingSlot.ItemQuantity = hoverSlotQuantity;
+        }
         else
+        {
             draggingSlot.Item = null;
+            draggingSlot.ItemQuantity = 1;
+        }
         hoveringSlot.Item = dragSlotItem;
+        hoveringSlot.ItemQuantity = dragSlotQuantity;
         draggingSlot = null;
         hoveringSlot = null;
     }
@@ -72,22 +102,53 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
-	public bool AddItem(Item item)
+	public bool AddItem(Item item, int quantity = 1)
 	{
-		if (IsFull())
-			return false;
+        ItemSlot itemFound = itemSlots.FirstOrDefault(s => (s.Item != null ? s.Item.Name : "") == item.Name);
 
-		items.Add(item);
-        foreach (var itemSlot in itemSlots)
+        if(itemFound != null && item.Stackable)
         {
-            if(itemSlot.Item == null)
+            itemFound.ItemQuantity += quantity;
+            return true;
+        }
+        else
+        {
+		    if (IsFull())
+			    return false;
+
+            if (item.Stackable)
             {
-                itemSlot.Item = item;
+                items.Add(item);
+                foreach (var itemSlot in itemSlots)
+                {
+                    if(itemSlot.Item == null)
+                    {
+                        itemSlot.Item = item;
+                        itemSlot.ItemQuantity = quantity;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                quantity = quantity > (itemSlots.Length - items.Count) ? itemSlots.Length - items.Count : quantity;
+                for (int i = 0; i < quantity; i++)
+                {
+                    items.Add(item);
+                    foreach (var itemSlot in itemSlots)
+                    {
+                        if (itemSlot.Item == null)
+                        {
+                            itemSlot.Item = item;
+                            itemSlot.ItemQuantity = 1;
+                            break;
+                        }
+                    }
+                }
                 return true;
             }
+            return true;
         }
-		//RefreshUI();
-		return true;
 	}
 
 	public bool RemoveItem(Item item)
@@ -105,6 +166,11 @@ public class Inventory : MonoBehaviour
 		}
 		return false;
 	}
+
+    public void SetCurrency(Currency currency)
+    {
+        this.currency = currency;
+    }
 
 	public bool IsFull()
 	{
