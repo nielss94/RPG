@@ -81,10 +81,13 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
             }
             else
             {
-                ItemTooltip.Instance.ShowTooltip(Item);
+                if(Item != null)
+                {
+                    ItemTooltip.Instance.ShowTooltip(Item); 
+                }
             }
         }
-        if(this is EquipmentSlot)
+        if(this is EquipmentSlot && Item != null)
         {
             ItemTooltip.Instance.ShowTooltip(Item);
         }
@@ -99,7 +102,10 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
                 inventory.hoveringSlot = null;
             }
         }
-        ItemTooltip.Instance.HideTooltip();
+        if(Item != null)
+        {
+            ItemTooltip.Instance.HideTooltip();
+        }
     }
 
     public void OnDrag(PointerEventData eventData)

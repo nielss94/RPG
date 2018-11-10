@@ -11,5 +11,6 @@ public class Recipe : UsableItem {
     public override void Use(PlayableCharacter character)
     {
         UIController.OpenUnlockPanel(ability);
+        ItemTooltip.Instance.HideTooltip();
     }
 }

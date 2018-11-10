@@ -21,7 +21,10 @@ public class PickUpCurrency : PickUp
 
     public override void Take(PlayableCharacter character)
     {
+        GetComponent<BoxCollider2D>().enabled = false;
+        Destroy(transform.GetChild(0).gameObject);
+        this.character = character;
         character.AddCurrency(value);
-        Destroy(gameObject);
+        taken = true;
     }
 }

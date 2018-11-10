@@ -33,4 +33,9 @@ public class CraftPanel : MonoBehaviour {
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>().LearnAbility(ability);
         Destroy(gameObject);
     }
+
+    public void Close()
+    {
+        Destroy(gameObject);
+    }
 }

@@ -11,6 +11,7 @@ public class NoWeaponException : Exception {
     {
         this.message = message;
     }
+
     public NoWeaponException()
     {
     }

@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum AbilityType
+{
+    Buff,
+    Attack,
+    Heal
+}
+
 [System.Serializable]
 public abstract class Ability : MonoBehaviour {
 
@@ -9,6 +16,8 @@ public abstract class Ability : MonoBehaviour {
     private new string name;
     [SerializeField]
     private Sprite image;
+    [SerializeField]
+    private string description;
     [SerializeField]
     private float cooldown;
     [SerializeField]
@@ -23,6 +32,8 @@ public abstract class Ability : MonoBehaviour {
     private float duration;
     [SerializeField]
     private WeaponTypes weaponType;
+    [SerializeField]
+    private AbilityType abilityType;
     [SerializeField]
     private Recipe recipe;
 
@@ -216,6 +227,32 @@ public abstract class Ability : MonoBehaviour {
         set
         {
             recipe = value;
+        }
+    }
+
+    public AbilityType AbilityType
+    {
+        get
+        {
+            return abilityType;
+        }
+
+        set
+        {
+            abilityType = value;
+        }
+    }
+
+    public string Description
+    {
+        get
+        {
+            return description;
+        }
+
+        set
+        {
+            description = value;
         }
     }
 

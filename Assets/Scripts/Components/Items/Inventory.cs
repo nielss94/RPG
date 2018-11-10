@@ -51,6 +51,11 @@ public class Inventory : MonoBehaviour
 		RefreshUI();
 	}
 
+    public void SetCurrency(Currency currency)
+    {
+        this.currency = currency;
+    }
+    
     public void UpdateCurrency()
     {
         if(currencyDisplays.Length == 4)
@@ -166,12 +171,7 @@ public class Inventory : MonoBehaviour
 		}
 		return false;
 	}
-
-    public void SetCurrency(Currency currency)
-    {
-        this.currency = currency;
-    }
-
+    
 	public bool IsFull()
 	{
 		return items.Count >= itemSlots.Length;

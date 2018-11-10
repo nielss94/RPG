@@ -18,14 +18,12 @@ public class BuffDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //Show buff tooltip
-        //StatTooltip.Instance.ShowTooltip(Stat, NameText.text);
+        AbilityToolTip.Instance.ShowTooltip(ability);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //Hide buff tooltip
-        //StatTooltip.Instance.HideTooltip();
+        AbilityToolTip.Instance.HideTooltip();
     }
 
     void Update()

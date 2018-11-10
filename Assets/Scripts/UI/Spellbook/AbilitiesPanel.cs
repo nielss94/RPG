@@ -12,15 +12,12 @@ public class AbilitiesPanel : MonoBehaviour {
     private List<Ability> knownAbilities = new List<Ability>();
     [SerializeField]
     private List<Ability> unlockedAbilities = new List<Ability>();
-
-
-
+    
     public int currentPage;
     public int cardsPerPage;
 
     public Text currentPageText;
     
-
     private void OnValidate()
     {
         SetPageCards();

@@ -45,6 +45,7 @@ public class StatPanel : MonoBehaviour
 			statDisplays[i].gameObject.SetActive(i < stats.Length);
 		}
 	}
+    
 
 	public void UpdateStatValues()
 	{

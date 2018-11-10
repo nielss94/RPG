@@ -7,13 +7,20 @@ using System.Linq;
 public class MapController : MonoBehaviour {
 
     [SerializeField] private List<MonsterSpawn> platforms = new List<MonsterSpawn>();
+
+    public static TeleportInfo previousTeleport;
     
-	void Awake () {
-        SceneManager.sceneLoaded += SetMonsterPlatforms;
-        GameplayCamera.Initialize();
-	}
+    public void Initialize(Scene scene, LoadSceneMode mode)
+    {
+        SetMonsterPlatforms();
+        if(previousTeleport != null)
+        {
+            if(previousTeleport.moveToIndex > 0)
+                SpawnPlayer();
+        }
+    }
     
-    void SetMonsterPlatforms(Scene scene, LoadSceneMode mode)
+    void SetMonsterPlatforms()
     {
         platforms.Clear();
         platforms = FindObjectsOfType<MonsterSpawn>().ToList();
@@ -38,4 +45,38 @@ public class MapController : MonoBehaviour {
             }
         }
     }
+
+    void SpawnPlayer()
+    {
+        PlayableCharacter player = FindObjectOfType<PlayableCharacter>();
+        player.GetComponent<PlayerMovement>().IsJumping = true;
+        player.GetComponent<PlayerMovement>().OnFloor = false;
+
+        player.transform.position = GetTeleportByIndex(previousTeleport.moveToIndex).transform.position;
+    }
+
+    public static void Teleport(MapTeleport teleport)
+    {
+        if(teleport.moveToIndex > 0)
+        {
+            previousTeleport = new TeleportInfo
+            {
+                moveToIndex = teleport.moveToIndex
+            };
+            SceneManager.LoadScene(teleport.MoveTo);
+        }
+    }
+
+    MapTeleport GetTeleportByIndex(int index)
+    {
+        foreach (var item in FindObjectsOfType<MapTeleport>())
+        {
+            if(item.teleportIndex == index)
+            {
+                return item;
+            }
+        }
+        return null;
+    }
 }
+

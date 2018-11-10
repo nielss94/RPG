@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour {
     public float move;
     public float jump;
 
+    
 
     void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -105,5 +106,31 @@ public class PlayerMovement : MonoBehaviour {
     public Vector2 GetAimingDirection()
     {
         return spriteRenderer.flipX ? Vector2.left : Vector2.right;
+    }
+
+    public bool OnFloor
+    {
+        get
+        {
+            return onFloor;
+        }
+
+        set
+        {
+            onFloor = value;
+        }
+    }
+
+    public bool IsJumping
+    {
+        get
+        {
+            return isJumping;
+        }
+
+        set
+        {
+            isJumping = value;
+        }
     }
 }

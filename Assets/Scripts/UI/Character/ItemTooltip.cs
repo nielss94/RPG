@@ -8,7 +8,7 @@ public class ItemTooltip : MonoBehaviour
 
 	[SerializeField] Text nameText;
 	[SerializeField] Text slotTypeText;
-	[SerializeField] Text statsText;
+	[SerializeField] Text infoText;
 
 	private StringBuilder sb = new StringBuilder();
 
@@ -24,35 +24,93 @@ public class ItemTooltip : MonoBehaviour
 
 	public void ShowTooltip(Item itemToShow)
 	{
-		if (!(itemToShow is EquippableItem)) {
-			return;
-		}
+        if (itemToShow is EquippableItem)
+            ShowEquippableToolTip(itemToShow);
+		else if(itemToShow is Recipe)
+            ShowRecipeToolTip(itemToShow);
+        else if(itemToShow is Potion)
+            ShowPotionToolTip(itemToShow);
+        else
+            ShowEtcToolTip(itemToShow);
+	}
 
-		EquippableItem item = (EquippableItem)itemToShow;
+    public void ShowRecipeToolTip(Item itemToShow)
+    {
+        Recipe recipe = (Recipe)itemToShow;
 
-		gameObject.SetActive(true);
+        gameObject.SetActive(true);
 
-		nameText.text = item.Name;
-		slotTypeText.text = item.EquipmentType.ToString();
+        nameText.text = recipe.Name;
+        slotTypeText.text = "Recipe";
 
-		sb.Length = 0;
+        infoText.text = recipe.Description;
+
+    }
+
+    public void ShowPotionToolTip(Item itemToShow)
+    {
+        Potion potion = (Potion)itemToShow;
+
+        gameObject.SetActive(true);
+
+        nameText.text = potion.Name;
+        slotTypeText.text = "Potion";
+
+        sb.Length = 0;
+
+        if (potion.healthGain > 0)
+            AddStatText(potion.healthGain, " Health");
+        if (potion.manaGain > 0)
+            AddStatText(potion.healthGain, " Mana");
+        if (potion.maxHealthGainPercentage > 0)
+            AddStatText(potion.healthGain, "% Health of max health");
+        if (potion.maxManaGainPercentage > 0)
+            AddStatText(potion.healthGain, " Mana of max mana");
+
+        sb.AppendLine();
+
+        sb.Append(potion.Description);
+
+        infoText.text = sb.ToString();
+    }
+
+    public void ShowEtcToolTip(Item itemToShow)
+    {
+        gameObject.SetActive(true);
+
+        nameText.text = itemToShow.Name;
+        slotTypeText.text = "Etc.";
+
+        infoText.text = itemToShow.Description;
+    }
+
+    public void ShowEquippableToolTip(Item itemToShow)
+    {
+        EquippableItem item = (EquippableItem)itemToShow;
+
+        gameObject.SetActive(true);
+
+        nameText.text = item.Name;
+        slotTypeText.text = item.EquipmentType.ToString();
+
+        sb.Length = 0;
 
         AddStatText(item.PhysicalAttack, " Physical attack");
         AddStatText(item.MagicalAttack, " Magical attack");
         AddStatText(item.PhysicalDefense, " Physical defense");
         AddStatText(item.MagicalDefense, " Magical defense");
         AddStatText(item.StrengthBonus, " Strength");
-		AddStatText(item.AgilityBonus, " Agility");
-		AddStatText(item.IntelligenceBonus, " Intelligence");
-		AddStatText(item.VitalityBonus, " Vitality");
+        AddStatText(item.AgilityBonus, " Agility");
+        AddStatText(item.IntelligenceBonus, " Intelligence");
+        AddStatText(item.VitalityBonus, " Vitality");
 
-		AddStatText(item.StrengthPercentBonus * 100, "% Strength");
-		AddStatText(item.AgilityPercentBonus * 100, "% Agility");
-		AddStatText(item.IntelligencePercentBonus * 100, "% Intelligence");
-		AddStatText(item.VitalityPercentBonus * 100, "% Vitality");
+        AddStatText(item.StrengthPercentBonus * 100, "% Strength");
+        AddStatText(item.AgilityPercentBonus * 100, "% Agility");
+        AddStatText(item.IntelligencePercentBonus * 100, "% Intelligence");
+        AddStatText(item.VitalityPercentBonus * 100, "% Vitality");
 
-		statsText.text = sb.ToString();
-	}
+        infoText.text = sb.ToString();
+    }
 
 	public void HideTooltip()
 	{

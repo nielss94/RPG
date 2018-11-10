@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameplayCamera : MonoBehaviour {
 
     private static GameObject player;
     public float speed;
 
-	public static void Initialize()
+    public static void Initialize(Scene scene, LoadSceneMode mode)
     {
         player = GameObject.FindGameObjectWithTag("Player");
     }

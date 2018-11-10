@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 
 public class AbilitySlotDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-
     public Image SpellImage;
     public Image CooldownImage;
     public TextMeshProUGUI Hotkey;
@@ -51,11 +50,16 @@ public class AbilitySlotDisplay : MonoBehaviour, IPointerEnterHandler, IPointerE
     public void OnPointerEnter(PointerEventData eventData)
     {
         AbilitiesBar.SetHoveringAbility(this);
+        if(AbilitySlot.ability != null)
+        {
+            AbilityToolTip.Instance.ShowTooltip(AbilitySlot.ability);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         AbilitiesBar.SetHoveringAbility(null);
+        AbilityToolTip.Instance.HideTooltip();
     }
     
 }

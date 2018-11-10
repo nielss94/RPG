@@ -26,4 +26,9 @@ public class UnlockPanel : MonoBehaviour {
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>().UnlockAbility(ability);
         Destroy(gameObject);
     }
+
+    public void Close()
+    {
+        Destroy(gameObject);
+    }
 }

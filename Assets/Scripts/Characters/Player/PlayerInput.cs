@@ -49,6 +49,16 @@ public class PlayerInput : MonoBehaviour {
                 }
             }
         }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1, LayerMask.GetMask("Teleport"));
+
+            if (hit.collider != null)
+            {
+                MapTeleport mt = hit.transform.GetComponent<MapTeleport>();
+                MapController.Teleport(mt);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Z))
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1, LayerMask.GetMask("PickUp"));

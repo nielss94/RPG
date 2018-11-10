@@ -14,6 +14,10 @@ public class CharacterStat
 	protected float _value;
 	public virtual float Value {
 		get {
+            if(_value == 0)
+            {
+                _value = BaseValue;
+            }
 			if(isDirty || lastBaseValue != BaseValue) {
 				lastBaseValue = BaseValue;
 				_value = CalculateFinalValue();

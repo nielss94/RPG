@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour {
     
-	void Awake()
+    public static void Initialize()
     {
         FloatingTextController.Initialize();
     }

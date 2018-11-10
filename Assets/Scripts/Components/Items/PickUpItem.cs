@@ -13,11 +13,14 @@ public class PickUpItem : PickUp {
         GetComponent<SpriteRenderer>().sprite = item.Icon;
     }
 
-    public override void Take(PlayableCharacter playableCharacter)
+    public override void Take(PlayableCharacter character)
     {
-        if (playableCharacter.inventory.AddItem(item, quantity))
+        this.character = character;
+        if (character.inventory.AddItem(item, quantity))
         {
-            Destroy(gameObject);
+            GetComponent<BoxCollider2D>().enabled = false;
+            Destroy(transform.GetChild(0).gameObject);
+            taken = true;
         }
     }
 }

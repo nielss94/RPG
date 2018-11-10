@@ -45,10 +45,21 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     public float generalAbilityCooldownTimer;
 
 
-    void Awake() {
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        CanvasHolder canvas = FindObjectOfType<CanvasHolder>();
+
         playerMovement = GetComponent<PlayerMovement>();
         stats = GetComponent<CharacterStats>();
+        statPanel       = canvas.StatPanel;
+        equipmentPanel  = canvas.EquipmentPanel;
+        buffPanel       = canvas.BuffPanel;
+        inventory       = canvas.Inventory;
+        abilitiesBar    = canvas.AbilitiesBar;
+        spellbook       = canvas.Spellbook;
 
+        statPanel.OnStatsChanged += OnStatsChanged;
         statPanel.SetStats(stats.PhysicalAttack, stats.MagicalAttack, stats.PhysicalDefense, stats.MagicalDefense,
                             stats.Strength, stats.Intelligence, stats.Vitality, stats.Agility);
         statPanel.UpdateStatValues();
@@ -66,7 +77,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
         inventory.OnItemRightClickedEvent += UseItemFromInventory;
         equipmentPanel.OnItemRightClickedEvent += UnequipFromEquipPanel;
-        statPanel.OnStatsChanged += OnStatsChanged;
+        
     }
     
     void Update()
@@ -225,6 +236,8 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
             {
                 inventory.AddItem(item);
             }
+
+            ItemTooltip.Instance.HideTooltip();
         }
     }
 
@@ -259,7 +272,14 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
     public void TakeDamage(Damage damage, Character source)
     {
-        //TODO: Apply armour
+        int physArmor = 100 + (int)Stats.PhysicalDefense.Value;
+        float physMultiply = 100F / physArmor;
+        damage.PhysicalAttack = (int)(damage.PhysicalAttack * physMultiply);
+
+        int magArmor = 100 + (int)Stats.MagicalDefense.Value;
+        float magMultiply = 100F / magArmor;
+        damage.MagicalAttack = (int)(damage.MagicalAttack * magMultiply);
+
         Monster monster = (Monster)source;
         KnockBack(monster.Direction);
         Health.CurHealth = (short)Mathf.Clamp(Health.CurHealth - (damage.PhysicalAttack + damage.MagicalAttack), 0, Health.MaxHealth);

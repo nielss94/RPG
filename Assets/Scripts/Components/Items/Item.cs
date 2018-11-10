@@ -15,6 +15,8 @@ public class Item : ScriptableObject
     [SerializeField]
     private new string name;
     [SerializeField]
+    private string description;
+    [SerializeField]
     private bool stackable;
     [SerializeField]
     private ItemType itemType;
@@ -57,6 +59,19 @@ public class Item : ScriptableObject
         set
         {
             itemType = value;
+        }
+    }
+
+    public string Description
+    {
+        get
+        {
+            return description;
+        }
+
+        set
+        {
+            description = value;
         }
     }
 }

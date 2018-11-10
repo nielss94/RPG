@@ -11,9 +11,18 @@ public class AbilitiesBar : MonoBehaviour {
     [SerializeField]
     private AbilitySlot[] abilitySlots;
 
-    static AbilitySlotDisplay hoveringSlot;
+
+    public AbilityToolTip abilityToolTip;
+
+    private static AbilitySlotDisplay hoveringSlot;
 
 
+    void OnEnable()
+    {
+        abilityToolTip.gameObject.SetActive(true);
+        abilityToolTip.HideTooltip();
+    }
+    
     private void OnValidate()
     {
         abilitySlotDisplays = transform.Find("AbilitySlots").GetComponentsInChildren<AbilitySlotDisplay>();

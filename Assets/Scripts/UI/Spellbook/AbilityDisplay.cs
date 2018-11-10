@@ -5,11 +5,13 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class AbilityDisplay : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image SpellImage;
     public Image CardImage;
     public Text AbilityName;
+    public Text CooldownText;
+    public Text ManaCostText;
     public bool locked = true;
     public bool crafted = false;
     public bool inOtherPanel = false;
@@ -33,11 +35,13 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
 
     private void OnValidate()
     {
-        Text text = GetComponentInChildren<Text>();
+        Text[] texts = GetComponentsInChildren<Text>();
         Image[] image = GetComponentsInChildren<Image>();
         SpellImage = image[0];
         CardImage = image[1];
-        AbilityName = text;
+        AbilityName = texts[0];
+        CooldownText = texts[1];
+        ManaCostText = texts[2];
     }
     
     public void SetAbilityLock(bool locked)
@@ -49,6 +53,9 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
     {
         SpellImage.sprite = Ability.Image;
         AbilityName.text = Ability.Name;
+        CooldownText.text = "";
+        ManaCostText.text = "";
+
         if (locked)
         {
             CardImage.sprite = Resources.Load<Sprite>("Sprites/CardLocked");
@@ -59,6 +66,8 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
         } else
         {
             CardImage.sprite = Resources.Load<Sprite>("Sprites/Card");
+            CooldownText.text = Ability.Cooldown.ToString();
+            ManaCostText.text = Ability.Cost.ToString();
         }
     }
 
@@ -128,5 +137,18 @@ public class AbilityDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownH
         dragging = false;
         if(draggingSpell != null)
             Destroy(draggingSpell.gameObject);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!locked && crafted)
+        {
+            AbilityToolTip.Instance.ShowTooltip(Ability);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        AbilityToolTip.Instance.HideTooltip();
     }
 }
