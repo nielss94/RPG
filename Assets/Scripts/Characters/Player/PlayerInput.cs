@@ -30,6 +30,7 @@ public class PlayerInput : MonoBehaviour {
                             a.Execute(character);
 
                             character.Mana.CurMana = (short)Mathf.Clamp(character.Mana.CurMana - abilitySlot.ability.Cost, 0, character.Mana.MaxMana);
+                            character.playerPanel.UpdateDisplayValues();
                             abilitySlot.cooldownLeft = abilitySlot.ability.Cooldown;
                             character.generalAbilityCooldownTimer = character.generalAbilityCooldown;
                         }
@@ -56,7 +57,7 @@ public class PlayerInput : MonoBehaviour {
             if (hit.collider != null)
             {
                 MapTeleport mt = hit.transform.GetComponent<MapTeleport>();
-                MapController.Teleport(mt);
+                StartCoroutine(MapController.Teleport(mt));
             }
         }
         if (Input.GetKeyDown(KeyCode.Z))

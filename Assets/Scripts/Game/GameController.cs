@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour {
             CanvasHolder canvasHolder = Resources.Load<CanvasHolder>("Prefabs/UI/Canvas");
             CanvasHolder canvas = Instantiate(canvasHolder) as CanvasHolder;
             canvas.name = "Canvas";
+            canvas.MinimapPanel.SetCurrentMap(SceneManager.GetActiveScene().name);
             PlayableCharacter player = Resources.Load<PlayableCharacter>("Prefabs/Player");
             player.gameObject.name = player.Name;
             Instantiate(player);

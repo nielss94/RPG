@@ -24,6 +24,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
     [Space]
     [Header("UI")]
+    public PlayerPanel playerPanel;
     public StatPanel statPanel;
     public EquipmentPanel equipmentPanel;
     public Inventory inventory;
@@ -58,6 +59,10 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         inventory       = canvas.Inventory;
         abilitiesBar    = canvas.AbilitiesBar;
         spellbook       = canvas.Spellbook;
+        playerPanel     = canvas.PlayerPanel;
+
+        playerPanel.SetResources(Health, Mana);
+        playerPanel.UpdateDisplayValues();
 
         statPanel.OnStatsChanged += OnStatsChanged;
         statPanel.SetStats(stats.PhysicalAttack, stats.MagicalAttack, stats.PhysicalDefense, stats.MagicalDefense,
@@ -286,6 +291,8 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         //Debug.LogFormat("OUCH! {0} took {1} damage", Name, (damage.PhysicalAttack + damage.MagicalAttack));
 
         StartCoroutine(FloatingTextController.CreateDamageText(damage, new Vector2(transform.position.x, transform.position.y + 0.5f), true));
+
+        playerPanel.UpdateDisplayValues();
 
         if (Health.CurHealth <= 0)
         {

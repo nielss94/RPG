@@ -20,11 +20,10 @@ public class Potion : UsableItem
         character.Mana.CurMana = (short)Mathf.Clamp(character.Mana.CurMana + manaGainPercToAmount, 0, character.Mana.MaxMana);
 
         int healthGainPercToAmount = (int)(character.Health.MaxHealth / 100f * maxHealthGainPercentage);
-        Debug.Log(healthGainPercToAmount);
         character.Health.CurHealth = (short)Mathf.Clamp(character.Health.CurHealth + healthGainPercToAmount, 0, character.Health.MaxHealth);
 
         ItemTooltip.Instance.HideTooltip();
-
+        character.playerPanel.UpdateDisplayValues();
         character.inventory.RemoveItem(this);
     }
 }

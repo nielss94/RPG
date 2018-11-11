@@ -51,11 +51,12 @@ public class MapController : MonoBehaviour {
         PlayableCharacter player = FindObjectOfType<PlayableCharacter>();
         player.GetComponent<PlayerMovement>().IsJumping = true;
         player.GetComponent<PlayerMovement>().OnFloor = false;
+        player.GetComponent<PlayerMovement>().CanMove = true;
 
         player.transform.position = GetTeleportByIndex(previousTeleport.moveToIndex).transform.position;
     }
 
-    public static void Teleport(MapTeleport teleport)
+    public static IEnumerator Teleport(MapTeleport teleport)
     {
         if(teleport.moveToIndex > 0)
         {
@@ -63,10 +64,16 @@ public class MapController : MonoBehaviour {
             {
                 moveToIndex = teleport.moveToIndex
             };
+            CanvasHolder canvas = FindObjectOfType<CanvasHolder>();
+            canvas.FadeScreen.Fade();
+            FindObjectOfType<PlayableCharacter>().PlayerMovement.CanMove = false;
+            yield return new WaitForSeconds(1f);
+            canvas.MinimapPanel.SetCurrentMap(teleport.MoveTo);
             SceneManager.LoadScene(teleport.MoveTo);
         }
     }
 
+    
     MapTeleport GetTeleportByIndex(int index)
     {
         foreach (var item in FindObjectsOfType<MapTeleport>())
