@@ -45,8 +45,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
                 quantityText.text = "";
         }
     }
-
-
+    
     void Awake()
     {
         if(!(this is EquipmentSlot))

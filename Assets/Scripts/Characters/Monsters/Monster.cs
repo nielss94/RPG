@@ -50,11 +50,8 @@ public abstract class Monster : Character, IDamageable {
     private float knockBackFrequency;
     private float knockBackTimer;
 
-    public List<Item> droppables = new List<Item>();
-
-    [Header("Currency")]
-    public ulong minCurrency;
-    public ulong maxCurrency;
+    public List<Droppable> droppables = new List<Droppable>();
+    
     
 
     void Awake()
@@ -68,13 +65,7 @@ public abstract class Monster : Character, IDamageable {
         moveRight = r > 0 ? true : false;
         SetRotation();
     }
-
-    void OnValidate()
-    {
-        if (minCurrency > maxCurrency)
-            minCurrency = maxCurrency;
-    }
-
+    
     public void Update()
     {
         if(timeSinceDamage > 0)
@@ -100,7 +91,6 @@ public abstract class Monster : Character, IDamageable {
 
     public void Die()
     {
-        //TODO: Drop loot
         foreach(var character in attackers)
         {
             int damageDealt = character.Value.Sum(d => d);
@@ -110,20 +100,46 @@ public abstract class Monster : Character, IDamageable {
             Debug.LogFormat("{0} defeated {1}. He dealt {2}({3}%) damage!", character.Key.Name, Name, damageDealt.ToString(), damagePercentage.ToString());
         }
         //TODO: Object pooling?
-        if(droppables.Count > 0)
+        List<Droppable> drops = new List<Droppable>();
+        PickUpCurrency puc = Resources.Load<PickUpCurrency>("Prefabs/Items/PickUp/PickupCurrency") as PickUpCurrency;
+        PickUpItem pui = Resources.Load<PickUpItem>("Prefabs/Items/PickUp/PickupItem") as PickUpItem;
+
+        if (droppables.Count > 0)
         {
-            PickUpItem pui = Resources.Load<PickUpItem>("Prefabs/Items/PickUp/PickupItem") as PickUpItem;
-            PickUpItem drop = Instantiate(pui, transform.position, Quaternion.identity);
-            drop.item = droppables[Random.Range(0, droppables.Count -1)];
-            drop.quantity = 1;
+            foreach (var item in droppables)
+            {
+                float random = Random.Range(0, 100);
+                if(random <= item.chance)
+                {
+                    drops.Add(item);
+                }
+            }
         }
-        ulong currency = (ulong)Random.Range(minCurrency, maxCurrency);
-        if(currency > 0)
+
+        for (int i = 0; i < drops.Count; i++)
         {
-            PickUpCurrency puc = Resources.Load<PickUpCurrency>("Prefabs/Items/PickUp/PickupCurrency") as PickUpCurrency;
-            PickUpCurrency drop = Instantiate(puc, transform.position, Quaternion.identity);
-            drop.value = currency;
-        }
+            if (drops[i].isCurrency)
+            {
+                ulong currency = (ulong)Random.Range(drops[i].minQuantity, drops[i].maxQuantity);
+                if (currency > 0)
+                {
+                    PickUpCurrency drop = Instantiate(puc, transform.position, Quaternion.identity);
+                    drop.GiveForce((0f- drops.Count / 4f) + i / 2f, 3);
+                    drop.value = currency;
+                }
+            }
+            else
+            {
+                PickUpItem drop = Instantiate(pui, transform.position, Quaternion.identity);
+                drop.GiveForce((0f - drops.Count / 4f) + i / 2f, 3);
+
+                drop.item = drops[i].item;
+                if (drop.item.Stackable)
+                    drop.quantity = Random.Range(drops[i].minQuantity, drops[i].maxQuantity);
+                else
+                    drop.quantity = 1;
+            }
+        }        
         Destroy(gameObject);
     }
 

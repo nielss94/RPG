@@ -16,7 +16,11 @@ public abstract class PickUp : MonoBehaviour {
     {
         outlineObject = GetComponent<OutlineObject>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 3), ForceMode2D.Impulse);
+    }
+
+    public void GiveForce(float x, float y)
+    {
+        GetComponent<Rigidbody2D>().AddForce(new Vector2(x, y), ForceMode2D.Impulse);
     }
 
     void Update()
@@ -40,6 +44,7 @@ public abstract class PickUp : MonoBehaviour {
         if(collision.gameObject.layer == LayerMask.NameToLayer("Platform"))
         {
             GetComponent<Rigidbody2D>().gravityScale = 0;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
         }
     }
 

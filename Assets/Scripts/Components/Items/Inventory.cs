@@ -164,7 +164,14 @@ public class Inventory : MonoBehaviour
             {
                 if (itemSlot.Item == item)
                 {
-                    itemSlot.Item = null;
+                    if (itemSlot.Item.Stackable && itemSlot.ItemQuantity > 1)
+                    {
+                        itemSlot.ItemQuantity--;
+                    }
+                    else
+                    {
+                        itemSlot.Item = null;
+                    }
                     return true;
                 }
             }
