@@ -116,6 +116,8 @@ public abstract class Monster : Character, IDamageable {
             }
         }
 
+        drops = drops.OrderBy(x => Random.value).ToList();
+
         for (int i = 0; i < drops.Count; i++)
         {
             if (drops[i].isCurrency)

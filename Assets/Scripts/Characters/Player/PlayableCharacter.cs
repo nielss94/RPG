@@ -62,12 +62,12 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         playerPanel     = canvas.PlayerPanel;
 
         playerPanel.SetResources(Health, Mana);
-        playerPanel.UpdateDisplayValues();
 
         statPanel.OnStatsChanged += OnStatsChanged;
         statPanel.SetStats(stats.PhysicalAttack, stats.MagicalAttack, stats.PhysicalDefense, stats.MagicalDefense,
                             stats.Strength, stats.Intelligence, stats.Vitality, stats.Agility);
         statPanel.UpdateStatValues();
+        playerPanel.UpdateDisplayValues();
 
         spellbook.abilitiesPanel.SetAbilities(knownAbilities);
         spellbook.abilitiesPanel.SetUnlockedAbilities(unlockedAbilities);

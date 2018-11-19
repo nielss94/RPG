@@ -57,10 +57,10 @@ public class PlayerInput : MonoBehaviour {
             if (hit.collider != null)
             {
                 MapTeleport mt = hit.transform.GetComponent<MapTeleport>();
-                StartCoroutine(MapController.Teleport(mt));
+                StartCoroutine(MapController.Instance.Teleport(mt));
             }
         }
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKey(KeyCode.Z))
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1, LayerMask.GetMask("PickUp"));
 

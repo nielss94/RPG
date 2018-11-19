@@ -7,6 +7,7 @@ public class GameplayCamera : MonoBehaviour {
 
     private static GameObject player;
     public float speed;
+    public bool lerp;
 
     public static void Initialize(Scene scene, LoadSceneMode mode)
     {
@@ -16,6 +17,11 @@ public class GameplayCamera : MonoBehaviour {
     private void FixedUpdate()
     {
         if(player != null)
-            transform.position = Vector3.Lerp(transform.position, new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z), speed * Time.fixedDeltaTime);
+        {
+            if (lerp)
+                transform.position = Vector3.Lerp(transform.position, new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z), speed * Time.fixedDeltaTime);
+            else
+                transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
+        }
     }
 }

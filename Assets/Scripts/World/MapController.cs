@@ -6,17 +6,46 @@ using System.Linq;
 
 public class MapController : MonoBehaviour {
 
+    public static MapController Instance;
+
     [SerializeField] private List<MonsterSpawn> platforms = new List<MonsterSpawn>();
 
-    public static TeleportInfo previousTeleport;
+    public TeleportInfo previousTeleport;
     
+    void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
+
     public void Initialize(Scene scene, LoadSceneMode mode)
     {
         SetMonsterPlatforms();
+        SetMapSong();
         if(previousTeleport != null)
         {
             if(previousTeleport.moveToIndex > 0)
                 SpawnPlayer();
+        }
+    }
+
+    public void SetMapSong()
+    {
+        AudioClip audioClip = FindObjectOfType<MapInfo>().mapSong;
+        AudioSource musicPlayer = GetComponent<AudioSource>();
+        if(audioClip != null)
+        {
+            if(audioClip != musicPlayer.clip)
+            {
+                musicPlayer.clip = audioClip;
+                musicPlayer.Play();
+            }
+        }
+        else
+        {
+            musicPlayer.Stop();
         }
     }
     
@@ -56,7 +85,7 @@ public class MapController : MonoBehaviour {
         player.transform.position = GetTeleportByIndex(previousTeleport.moveToIndex).transform.position;
     }
 
-    public static IEnumerator Teleport(MapTeleport teleport)
+    public IEnumerator Teleport(MapTeleport teleport)
     {
         if(teleport.moveToIndex > 0)
         {
@@ -72,7 +101,6 @@ public class MapController : MonoBehaviour {
             SceneManager.LoadScene(teleport.MoveTo);
         }
     }
-
     
     MapTeleport GetTeleportByIndex(int index)
     {

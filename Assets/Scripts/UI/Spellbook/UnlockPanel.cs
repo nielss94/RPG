@@ -23,8 +23,12 @@ public class UnlockPanel : MonoBehaviour {
 
     public void Unlock()
     {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>().UnlockAbility(ability);
-        Destroy(gameObject);
+        PlayableCharacter player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>();
+        if (player.inventory.RemoveItem(ability.Recipe))
+        {
+            player.UnlockAbility(ability);
+            Destroy(gameObject);
+        }
     }
 
     public void Close()

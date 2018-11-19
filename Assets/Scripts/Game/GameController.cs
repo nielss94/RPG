@@ -31,4 +31,5 @@ public class GameController : MonoBehaviour {
             Destroy(gameObject);
         }
     }
+    
 }

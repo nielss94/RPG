@@ -107,6 +107,7 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
+
 	public bool AddItem(Item item, int quantity = 1)
 	{
         ItemSlot itemFound = itemSlots.FirstOrDefault(s => (s.Item != null ? s.Item.Name : "") == item.Name);
@@ -156,22 +157,35 @@ public class Inventory : MonoBehaviour
         }
 	}
 
-	public bool RemoveItem(Item item)
+	public bool RemoveItem(Item item, int quantity = 1)
 	{
-		if (items.Remove(item))
+        if (item.Stackable)
+        {
+            foreach (var itemSlot in itemSlots)
+            {
+                if (itemSlot.Item == item)
+                {
+                    if (itemSlot.ItemQuantity > 1)
+                    {
+                        itemSlot.ItemQuantity = Mathf.Clamp(itemSlot.ItemQuantity - quantity, 0, 999);
+                        return true;
+                    }
+                    else
+                    {
+                        itemSlot.Item = null;
+                        return true;
+                    }
+                }
+                
+            }
+        }
+        else if (items.Remove(item))
 		{
             foreach (var itemSlot in itemSlots)
             {
                 if (itemSlot.Item == item)
                 {
-                    if (itemSlot.Item.Stackable && itemSlot.ItemQuantity > 1)
-                    {
-                        itemSlot.ItemQuantity--;
-                    }
-                    else
-                    {
-                        itemSlot.Item = null;
-                    }
+                    itemSlot.Item = null;
                     return true;
                 }
             }
@@ -179,7 +193,30 @@ public class Inventory : MonoBehaviour
 		return false;
 	}
     
-	public bool IsFull()
+    public bool HasItem(Item item, int quantity = 1)
+    {
+        foreach (var itemSlot in itemSlots)
+        {
+            if (itemSlot.Item == item)
+            {
+                if(item.Stackable)
+                {
+                    if (itemSlot.ItemQuantity >= quantity)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public bool IsFull()
 	{
 		return items.Count >= itemSlots.Length;
 	}

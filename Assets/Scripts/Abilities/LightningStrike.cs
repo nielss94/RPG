@@ -49,7 +49,6 @@ public class LightningStrike : Ability {
     {
         for (int i = 0; i < NumberOfHits; i++)
         {
-            //TODO: Get damage range
             if((Monster)damageable != null)
             {
                 Character.DealDamage(damageable, CalculateDamage());

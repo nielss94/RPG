@@ -30,8 +30,22 @@ public class CraftPanel : MonoBehaviour {
 
     public void Craft()
     {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>().LearnAbility(ability);
-        Destroy(gameObject);
+        PlayableCharacter player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayableCharacter>();
+        bool hasAllItems = true;
+        foreach (var item in ability.Recipe.recipeItems)
+        {
+            if (!player.inventory.HasItem(item.item, item.amount))
+                hasAllItems = false;
+        }
+        if (hasAllItems)
+        {
+            foreach (var item in ability.Recipe.recipeItems)
+            {
+                player.inventory.RemoveItem(item.item, item.amount);
+            }
+            player.LearnAbility(ability);
+            Destroy(gameObject);
+        }
     }
 
     public void Close()

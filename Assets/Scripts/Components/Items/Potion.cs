@@ -13,6 +13,7 @@ public class Potion : UsableItem
     
     public override void Use(PlayableCharacter character)
     {
+
         character.Health.CurHealth = (short)Mathf.Clamp(character.Health.CurHealth + healthGain, 0, character.Health.MaxHealth);
         character.Mana.CurMana = (short)Mathf.Clamp(character.Mana.CurMana + manaGain, 0, character.Mana.MaxMana);
 
