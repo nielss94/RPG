@@ -11,9 +11,7 @@ public abstract class Character : MonoBehaviour
     [SerializeField]
     private Mana mana;
     [SerializeField]
-    private short level;
-    [SerializeField]
-    private int experience;
+    private Experience experience;
 
     public string Name
     {
@@ -27,21 +25,8 @@ public abstract class Character : MonoBehaviour
             name = value;
         }
     }
-
-    public short Level
-    {
-        get
-        {
-            return level;
-        }
-
-        set
-        {
-            level = value;
-        }
-    }
     
-    public int Experience
+    public Experience Experience
     {
         get
         {

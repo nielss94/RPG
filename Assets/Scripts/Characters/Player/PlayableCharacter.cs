@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
+using UnityEditor;
 
-[RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(CharacterStats))]
 public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     
@@ -51,7 +52,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         DontDestroyOnLoad(gameObject);
         CanvasHolder canvas = FindObjectOfType<CanvasHolder>();
 
-        playerMovement = GetComponent<PlayerMovement>();
+        playerMovement = GetComponentInChildren<PlayerMovement>();
         stats = GetComponent<CharacterStats>();
         statPanel       = canvas.StatPanel;
         equipmentPanel  = canvas.EquipmentPanel;
@@ -61,7 +62,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         spellbook       = canvas.Spellbook;
         playerPanel     = canvas.PlayerPanel;
 
-        playerPanel.SetResources(Health, Mana);
+        playerPanel.SetResources(Health, Mana, Experience);
 
         statPanel.OnStatsChanged += OnStatsChanged;
         statPanel.SetStats(stats.PhysicalAttack, stats.MagicalAttack, stats.PhysicalDefense, stats.MagicalDefense,
@@ -82,6 +83,8 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
         inventory.OnItemRightClickedEvent += UseItemFromInventory;
         equipmentPanel.OnItemRightClickedEvent += UnequipFromEquipPanel;
+        
+        Experience.WriteExpTableToFile();
         
     }
     
@@ -108,18 +111,17 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         {
             onHitMoveBlockTimer -= Time.deltaTime;
         }
-
-
     }
-
+    
     void OnStatsChanged()
     {
         Health.MaxHealth = (short)(Health.BaseMaxHealth + (Stats.Vitality.Value * 5));
     }
 
-    public void GainExperience(int experience)
+    public void GainExperience(long experience)
     {
-        Experience += experience;
+        Experience.TotalExperience += experience;
+        playerPanel.UpdateDisplayValues();
     }
 
     public void AddCurrency(ulong value)
@@ -330,11 +332,11 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
                 if (playerMovement.IsOnFloor())
                 {
                     Gizmos.DrawLine(lineDown,
-                        GetComponent<PlayerMovement>().GetComponent<SpriteRenderer>().flipX ?
+                        GetComponent<SpriteRenderer>().flipX ?
                         lineDown + (Vector2.left * Weapon.Range) :
                         lineDown + (Vector2.right * Weapon.Range));
                     Gizmos.DrawLine(lineUp,
-                        GetComponent<PlayerMovement>().GetComponent<SpriteRenderer>().flipX ?
+                        GetComponent<SpriteRenderer>().flipX ?
                         lineUp + (Vector2.left * Weapon.Range) :
                         lineUp + (Vector2.right * Weapon.Range));
                 }
@@ -350,11 +352,11 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
                                                 : transform.position.x + rangedOffset, transform.position.y - rangedOffset);
                     }
                     Gizmos.DrawLine(lineDown,
-                        GetComponent<PlayerMovement>().GetComponent<SpriteRenderer>().flipX ?
+                        GetComponent<SpriteRenderer>().flipX ?
                         lineDown + (Vector2.left * Weapon.Range) :
                         lineDown + (Vector2.right * Weapon.Range));
                     Gizmos.DrawLine(lineUp,
-                        GetComponent<PlayerMovement>().GetComponent<SpriteRenderer>().flipX ?
+                        GetComponent<SpriteRenderer>().flipX ?
                         lineUp + (Vector2.left * Weapon.Range) :
                         lineUp + (Vector2.right * Weapon.Range));
                 }

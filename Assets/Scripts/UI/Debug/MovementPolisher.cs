@@ -16,7 +16,7 @@ public class MovementPolisher : MonoBehaviour {
     
     // Use this for initialization
     void Start () {
-        playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+        playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerMovement>();
         Initialize();
 	}
 

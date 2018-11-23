@@ -20,7 +20,7 @@ public class Assassinate : Ability {
     public void Initialize(PlayableCharacter character)
     {
         Character = character;
-        playerMovement = Character.GetComponent<PlayerMovement>();
+        playerMovement = Character.PlayerMovement;
     }
 
     public void Attack(RaycastHit2D hit)

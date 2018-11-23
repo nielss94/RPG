@@ -8,7 +8,7 @@ public class MeleeBasicAttack : Ability {
 
     public override void Execute(Character character)
     {
-        playerMovement = character.GetComponent<PlayerMovement>();
+        playerMovement = character.GetComponentInChildren<PlayerMovement>();
         Character = character as PlayableCharacter;
         if(IsCorrectWeaponType())
         {

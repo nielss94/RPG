@@ -69,7 +69,38 @@ public class PlayerInput : MonoBehaviour {
                 hit.transform.GetComponent<PickUp>().Take(character);
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.KeypadDivide))
+        {
+            character.GainExperience(1000);
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadMultiply))
+        {
+            character.GainExperience(10000);
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadMinus))
+        {
+            character.GainExperience(50000);
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadPlus))
+        {
+            character.GainExperience(100000);
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            character.GainExperience(1000000);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            character.GainExperience(100);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            character.GainExperience(250);
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            character.GainExperience(100000);
+        }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             character.AddCurrency(10);

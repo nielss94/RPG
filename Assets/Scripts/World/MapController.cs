@@ -78,9 +78,9 @@ public class MapController : MonoBehaviour {
     void SpawnPlayer()
     {
         PlayableCharacter player = FindObjectOfType<PlayableCharacter>();
-        player.GetComponent<PlayerMovement>().IsJumping = true;
-        player.GetComponent<PlayerMovement>().OnFloor = false;
-        player.GetComponent<PlayerMovement>().CanMove = true;
+        player.PlayerMovement.IsJumping = true;
+        player.PlayerMovement.OnFloor = false;
+        player.PlayerMovement.CanMove = true;
 
         player.transform.position = GetTeleportByIndex(previousTeleport.moveToIndex).transform.position;
     }
