@@ -10,8 +10,6 @@ public abstract class Character : MonoBehaviour
     private Health health;
     [SerializeField]
     private Mana mana;
-    [SerializeField]
-    private Experience experience;
 
     public string Name
     {
@@ -23,19 +21,6 @@ public abstract class Character : MonoBehaviour
         set
         {
             name = value;
-        }
-    }
-    
-    public Experience Experience
-    {
-        get
-        {
-            return experience;
-        }
-
-        set
-        {
-            experience = value;
         }
     }
 

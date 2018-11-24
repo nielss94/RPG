@@ -5,8 +5,7 @@ using UnityEngine;
 public class Felix : Monster {
     
     
-	// Update is called once per frame
-	new void Update () {
+    new void Update () {
         base.Update();
 
         if(Target != null)
@@ -17,5 +16,10 @@ public class Felix : Monster {
             Idle();
         }
     }
-    
+
+    public override IEnumerator AnimateAndDie()
+    {
+        Destroy(gameObject);
+        yield return new WaitForSeconds(0);
+    }
 }

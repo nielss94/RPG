@@ -16,4 +16,10 @@ public class Nairo : Monster {
             Idle();
         }
     }
+
+    public override IEnumerator AnimateAndDie()
+    {
+        yield return new WaitForSeconds(0);
+        Destroy(gameObject);
+    }
 }

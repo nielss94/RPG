@@ -10,6 +10,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     
     private PlayerMovement playerMovement;
     private CharacterStats stats;
+    [SerializeField] private Experience experience;
     [SerializeField] private Currency currency;
 
     [Space]
@@ -19,8 +20,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     private List<Ability> knownAbilities = new List<Ability>();
     [SerializeField]
     private List<Ability> unlockedAbilities = new List<Ability>();
-
-
+    
     public List<Ability> activeBuffs = new List<Ability>();
 
     [Space]
@@ -62,7 +62,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         spellbook       = canvas.Spellbook;
         playerPanel     = canvas.PlayerPanel;
 
-        playerPanel.SetResources(Health, Mana, Experience);
+        playerPanel.SetResources(Health, Mana, experience);
 
         statPanel.OnStatsChanged += OnStatsChanged;
         statPanel.SetStats(stats.PhysicalAttack, stats.MagicalAttack, stats.PhysicalDefense, stats.MagicalDefense,
@@ -84,7 +84,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
         inventory.OnItemRightClickedEvent += UseItemFromInventory;
         equipmentPanel.OnItemRightClickedEvent += UnequipFromEquipPanel;
         
-        Experience.WriteExpTableToFile();
+        experience.WriteExpTableToFile();
         
     }
     
@@ -120,7 +120,7 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
 
     public void GainExperience(long experience)
     {
-        Experience.TotalExperience += experience;
+        this.experience.TotalExperience += experience;
         playerPanel.UpdateDisplayValues();
     }
 

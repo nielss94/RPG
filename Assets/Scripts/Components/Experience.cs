@@ -76,8 +76,6 @@ public class Experience {
         float constXP = -0.01f;
         int combatSec = 3;
         int nonCombatSec = 1;
-        
-        float combatMin = combatSec / 60f;
         float secPerMonster = combatSec + nonCombatSec;
 
         float totalMin = 0;

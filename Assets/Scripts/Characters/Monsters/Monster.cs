@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-
 public abstract class Monster : Character, IDamageable {
-    
+
+    private const float constA = -0.01f;
+
     [SerializeField]
     private Weapon weapon;
-
     private Equipment equipment;
-
+    [HideInInspector] public Animator animator;
+    
     private Dictionary<Character, List<int>> attackers = new Dictionary<Character, List<int>>();
 
-    public int experienceReward;
+    [SerializeField] private int level;
+    [SerializeField] private long experienceReward;
 
     public event System.Action OnHealthChanged;
 
@@ -36,6 +38,8 @@ public abstract class Monster : Character, IDamageable {
 
     [Header("Combat Settings")]
     [SerializeField]
+    private bool isDead;
+    [SerializeField]
     private float moveSpeed;
     [SerializeField]
     private Transform target;
@@ -53,9 +57,9 @@ public abstract class Monster : Character, IDamageable {
     public List<Droppable> droppables = new List<Droppable>();
     
     
-
     void Awake()
     {
+        animator = GetComponent<Animator>();
         if (!equipment)
             equipment = GetComponent<Equipment>();
         attackTimer = attackCooldown;
@@ -96,8 +100,12 @@ public abstract class Monster : Character, IDamageable {
             int damageDealt = character.Value.Sum(d => d);
             double damagePercentage = Mathf.Clamp(damageDealt / Health.MaxHealth * 100f, 0,100);
             PlayableCharacter player = (PlayableCharacter)character.Key;
-            player.GainExperience((int)(experienceReward / 100 * damagePercentage));
-            Debug.LogFormat("{0} defeated {1}. He dealt {2}({3}%) damage!", character.Key.Name, Name, damageDealt.ToString(), damagePercentage.ToString());
+            
+            long expShare = (long)(ExperienceReward / 100f * damagePercentage);
+            
+            player.GainExperience(expShare);
+            Debug.LogFormat("{0} defeated {1}. He dealt {2}({3}%) damage!", player.Name, Name, damageDealt.ToString(), damagePercentage.ToString());
+            Debug.LogFormat("{0} earned {1} experience!",player.Name,expShare);
         }
         //TODO: Object pooling?
         List<Droppable> drops = new List<Droppable>();
@@ -118,6 +126,8 @@ public abstract class Monster : Character, IDamageable {
 
         drops = drops.OrderBy(x => Random.value).ToList();
 
+        Vector3 dropPos = new Vector3(transform.position.x, transform.position.y + 0.1f,transform.position.z);
+
         for (int i = 0; i < drops.Count; i++)
         {
             if (drops[i].isCurrency)
@@ -125,14 +135,14 @@ public abstract class Monster : Character, IDamageable {
                 ulong currency = (ulong)Random.Range(drops[i].minQuantity, drops[i].maxQuantity);
                 if (currency > 0)
                 {
-                    PickUpCurrency drop = Instantiate(puc, transform.position, Quaternion.identity);
+                    PickUpCurrency drop = Instantiate(puc, dropPos, Quaternion.identity);
                     drop.GiveForce((0f- drops.Count / 4f) + i / 2f, 3);
                     drop.value = currency;
                 }
             }
             else
             {
-                PickUpItem drop = Instantiate(pui, transform.position, Quaternion.identity);
+                PickUpItem drop = Instantiate(pui, dropPos, Quaternion.identity);
                 drop.GiveForce((0f - drops.Count / 4f) + i / 2f, 3);
 
                 drop.item = drops[i].item;
@@ -141,9 +151,11 @@ public abstract class Monster : Character, IDamageable {
                 else
                     drop.quantity = 1;
             }
-        }        
-        Destroy(gameObject);
+        }
+        StartCoroutine(AnimateAndDie());
     }
+
+    public abstract IEnumerator AnimateAndDie();
 
     public void TakeDamage(Damage damage, Character source)
     {
@@ -269,9 +281,11 @@ public abstract class Monster : Character, IDamageable {
             ChangeRotation();
         }
         if (moveRight)
-            transform.Translate(1 * Time.deltaTime, 0, 0);
+        {
+            transform.Translate(MoveSpeed * Time.deltaTime, 0, 0);
+        }
         else
-            transform.Translate(-1 * Time.deltaTime, 0, 0);
+            transform.Translate(-MoveSpeed * Time.deltaTime, 0, 0);
 
         HandleJump();
     }
@@ -440,6 +454,28 @@ public abstract class Monster : Character, IDamageable {
         set
         {
             onFloor = value;
+        }
+    }
+
+    public long ExperienceReward
+    {
+        get
+        {
+            long xp = (long)(level * ((10 * (Mathf.Pow(level, constA)) / (level / 100 + 1))));
+            return xp;
+        }
+    }
+
+    public bool IsDead
+    {
+        get
+        {
+            return isDead;
+        }
+
+        set
+        {
+            isDead = value;
         }
     }
 }
