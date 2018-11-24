@@ -7,19 +7,25 @@ public class Nairo : Monster {
     new void Update()
     {
         base.Update();
-        if (Target != null)
+        if (!IsDead)
         {
-            ApproachTarget();
-        }
-        else
-        {
-            Idle();
+            if (Target != null)
+            {
+                ApproachTarget();
+            }
+            else
+            {
+                Idle();
+            }
         }
     }
 
     public override IEnumerator AnimateAndDie()
     {
-        yield return new WaitForSeconds(0);
+        IsDead = true;
+        animator.SetBool("Dead", IsDead);
+        GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
         Destroy(gameObject);
     }
 }

@@ -29,6 +29,7 @@ public abstract class Monster : Character, IDamageable {
     [SerializeField] private bool onFloor;
     [SerializeField] private Transform platformChecker;
 
+    [SerializeField] private float jumpHeight;
     [SerializeField] [Range(0.5f, 10)] private float minJumpCooldown = 3f;
     [SerializeField] [Range(0.5f, 10)] private float maxJumpCooldown = 3f;
     private float jumpTimer;
@@ -275,7 +276,7 @@ public abstract class Monster : Character, IDamageable {
 
     public virtual void Idle()
     {
-        RaycastHit2D platformInfo = Physics2D.Raycast(platformChecker.GetChild(0).position, Vector2.down, 0.5f, LayerMask.GetMask("Platform"));
+        RaycastHit2D platformInfo = Physics2D.Raycast(platformChecker.GetChild(0).position, Vector2.down, 1.5f, LayerMask.GetMask("Platform"));
         if(platformInfo.collider == null)
         {
             ChangeRotation();
@@ -301,7 +302,8 @@ public abstract class Monster : Character, IDamageable {
                     int decider = Random.Range(1, 10);
                     if (decider <= jumpFrequency || jumpFrequency >= 10)
                     {
-                        GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 2), ForceMode2D.Impulse);
+                        GetComponent<Rigidbody2D>().AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
+                        animator.SetBool("Jumping", true);
                         onFloor = false;
                     }
 
@@ -345,6 +347,7 @@ public abstract class Monster : Character, IDamageable {
     {
         if (collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
         {
+            animator.SetBool("Jumping", false);
             onFloor = true;
         }
     }
