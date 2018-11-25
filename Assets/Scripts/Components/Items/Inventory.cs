@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.EventSystems;
 
-public class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField] List<Item> items;
 	[SerializeField] Transform itemsParent;
@@ -16,10 +17,12 @@ public class Inventory : MonoBehaviour
     public bool dragging = false;
     public ItemSlot draggingSlot;
     public ItemSlot hoveringSlot;
+    public bool hoveringInventory;
 
     [SerializeField] Transform currencyParent;
     [SerializeField] CurrencyDisplay[] currencyDisplays;
     private Currency currency;
+
 
 	private void Start()
 	{
@@ -220,4 +223,32 @@ public class Inventory : MonoBehaviour
 	{
 		return items.Count >= itemSlots.Length;
 	}
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        hoveringInventory = false;
+        print("cursor left inventory");
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        hoveringInventory = true;
+        print("cursor in inventory");
+    }
+
+    public void DropItem(ItemSlot itemSlot)
+    {
+        PlayableCharacter player = FindObjectOfType<PlayableCharacter>();
+        Vector3 dropPos = new Vector3(player.transform.position.x, player.transform.position.y + 0.1f, player.transform.position.z);
+        Item item = itemSlot.Item;
+        if (RemoveItem(itemSlot.Item, itemSlot.ItemQuantity))
+        {
+            PickUpItem pickUpItem = Resources.Load<PickUpItem>("Prefabs/Items/PickUp/PickupItem");
+            PickUpItem itemDropped = Instantiate(pickUpItem, dropPos, Quaternion.identity) as PickUpItem;
+            itemDropped.GiveForce(0, 3);
+
+            itemDropped.item = item;
+            itemDropped.quantity = itemSlot.ItemQuantity;
+        }
+    }
 }

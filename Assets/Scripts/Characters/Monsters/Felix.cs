@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Felix : Monster {
-    
-    
-    new void Update () {
-        base.Update();
 
-        if(Target != null)
+
+    new void Update()
+    {
+        base.Update();
+        if (!IsDead)
         {
-            ApproachTarget();
-        }else
-        {
-            Idle();
+            if (Target != null)
+            {
+                ApproachTarget();
+            }
+            else
+            {
+                Idle();
+            }
         }
     }
 
     public override IEnumerator AnimateAndDie()
     {
+        IsDead = true;
+        animator.SetBool("Dead", IsDead);
+        GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
         Destroy(gameObject);
-        yield return new WaitForSeconds(0);
     }
 }

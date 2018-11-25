@@ -136,9 +136,13 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
             if (inventory.dragging)
             {
                 inventory.dragging = false;
-                if (inventory.hoveringSlot != null)
+                if (inventory.hoveringSlot != null )
                 {
                     inventory.MoveItem();
+                }
+                else if(!inventory.hoveringInventory)
+                {
+                    inventory.DropItem(this);
                 }
                 image.rectTransform.position = originalPos;
                 GetComponent<CanvasGroup>().blocksRaycasts = true;
