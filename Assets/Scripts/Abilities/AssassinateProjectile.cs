@@ -45,7 +45,7 @@ public class AssassinateProjectile : MonoBehaviour {
     void FixedUpdate () {
         transform.Rotate(0, 0, Random.Range(-1, 1) <= 0 ? -30 : 30);
 
-        if (realTarget != null)
+        if (realTarget != null && !realTarget.GetComponent<Monster>().IsDead)
         {
             if (Vector2.Distance(transform.position,target.transform.position) < 0.1f)
             {

@@ -7,7 +7,10 @@ using UnityEditor;
 
 [RequireComponent(typeof(CharacterStats))]
 public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
-    
+
+    [SerializeField] private ReSkinAnimation bodyAnimation;
+    [SerializeField] private ReSkinAnimation hatAnimation;
+    [SerializeField] private ReSkinAnimation legsAnimation;
     private PlayerMovement playerMovement;
     private CharacterStats stats;
     [SerializeField] private Experience experience;
@@ -51,7 +54,9 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     {
         DontDestroyOnLoad(gameObject);
         CanvasHolder canvas = FindObjectOfType<CanvasHolder>();
-
+        bodyAnimation = transform.Find("Body").GetComponent<ReSkinAnimation>();
+        legsAnimation = transform.Find("Legs").GetComponent<ReSkinAnimation>();
+        hatAnimation = transform.Find("Hat").GetComponent<ReSkinAnimation>();
         playerMovement = GetComponentInChildren<PlayerMovement>();
         stats = GetComponent<CharacterStats>();
         statPanel       = canvas.StatPanel;
@@ -205,7 +210,29 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
     {
         if (item is EquippableItem)
         {
-            Unequip((EquippableItem)item);
+            switch (((EquippableItem)item).EquipmentType)
+            {
+                case EquipmentTypes.Helmet:
+                    hatAnimation.SetSheet("Hat/Standard Hat");
+                    break;
+                case EquipmentTypes.Body:
+                    bodyAnimation.SetSheet("Body/Standard Armour");
+                    break;
+                case EquipmentTypes.Leggings:
+                    legsAnimation.SetSheet("Legs/Standard Legs");
+                    break;
+                case EquipmentTypes.Boots:
+                    break;
+                case EquipmentTypes.Gloves:
+                    break;
+                case EquipmentTypes.Shield:
+                    break;
+                case EquipmentTypes.Weapon:
+                    break;
+                default:
+                    break;
+            }  
+            Unequip(((EquippableItem)item));
         }
     }
 
@@ -235,6 +262,28 @@ public class PlayableCharacter : Character, ICanDealDamage, IDamageable {
                     inventory.AddItem(previousItem);
                     previousItem.Unequip(this);
                     statPanel.UpdateStatValues();
+                }
+                switch (item.EquipmentType)
+                {
+                    case EquipmentTypes.Helmet:
+                        hatAnimation.SetSheet("Hat/"+item.Name);
+                        break;
+                    case EquipmentTypes.Body:
+                        bodyAnimation.SetSheet("Body/"+item.Name);
+                        break;
+                    case EquipmentTypes.Leggings:
+                        legsAnimation.SetSheet("Legs/"+item.Name);
+                        break;
+                    case EquipmentTypes.Boots:
+                        break;
+                    case EquipmentTypes.Gloves:
+                        break;
+                    case EquipmentTypes.Shield:
+                        break;
+                    case EquipmentTypes.Weapon:
+                        break;
+                    default:
+                        break;
                 }
                 item.Equip(this);
                 statPanel.UpdateStatValues();

@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
     
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer standardRenderer;
+    [SerializeField] private SpriteRenderer bodyRenderer;
+    [SerializeField] private SpriteRenderer legsRenderer;
+    [SerializeField] private SpriteRenderer hatRenderer;
 
     [SerializeField]
     private bool onFloor;
@@ -28,7 +31,7 @@ public class PlayerMovement : MonoBehaviour {
 
     void Start () {
         player = transform.parent;
-        spriteRenderer = player.GetComponent<SpriteRenderer>();
+
         moveSpeed = baseMoveSpeed;
 	}
 
@@ -44,7 +47,10 @@ public class PlayerMovement : MonoBehaviour {
             move = Input.GetAxis("Walk");
             jump = Input.GetAxis("Jump");
 
-            spriteRenderer.flipX = move > 0 ? false : (move < 0 ? true : spriteRenderer.flipX);
+            standardRenderer.flipX = move > 0 ? false : (move < 0 ? true : standardRenderer.flipX);
+            bodyRenderer.flipX = move > 0 ? false : (move < 0 ? true : bodyRenderer.flipX);
+            legsRenderer.flipX = move > 0 ? false : (move < 0 ? true : legsRenderer.flipX);
+            hatRenderer.flipX = move > 0 ? false : (move < 0 ? true : hatRenderer.flipX);
             if (move != 0 && onFloor && player.GetComponent<Rigidbody2D>().velocity.y <= 0 && player.GetComponent<PlayableCharacter>().onHitMoveBlockTimer <= 0)
             {
                 player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
@@ -120,7 +126,7 @@ public class PlayerMovement : MonoBehaviour {
 
     public Vector2 GetAimingDirection()
     {
-        return spriteRenderer.flipX ? Vector2.left : Vector2.right;
+        return standardRenderer.flipX ? Vector2.left : Vector2.right;
     }
 
     public bool OnFloor

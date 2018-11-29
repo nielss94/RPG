@@ -69,6 +69,7 @@ public class Experience {
             level = value;
         }
     }
+
     public void WriteExpTableToFile(int maxLevel = 150)
     {
         string path = "Assets/Resources/Text/ExperienceTable.txt";
